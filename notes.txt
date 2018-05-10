@@ -1,0 +1,45 @@
+Examples to run:
+formaaldehyde with 2 h2o
+((c1[1],c2[2],c3[3],c4[4];p).0 | (h1[1];p).0 | (h2[2];p).0 | (o1[3],o2[4],n).0 | (h3[5];p).0 | (h4[6];p).0 | (o3[5],o4[6],n).0 | (h5[7];p).0 | (h6[8];p).0 | (o5[7],o6[8],n).0) \ {c1,c2,c3,c4,h1,h2,h3,h4,h5,h6,o1,o2,o3,o4,o5,o6,n,p,c1h1,c2h2}
+c1,h1,c1h1,c1,h2,c1h2,c1,h3,c1h3,c1,h4,c1h4,c1,h5,c1h5,c1,h6,c1h6,c2,h1,c2h1,c2,h2,c2h2,c2,h3,c2h3,c2,h4,c2h4,c2,h5,c2h5,c2,h6,c2h6,c3,h1,c3h1,c3,h2,c3h2,c3,h3,c3h3,c3,h4,c3h4,c3,h5,c3h5,c3,h6,c3h6,c4,h1,c4h1,c4,h2,c4h2,c4,h3,c4h3,c4,h4,c4h4,c4,h5,c4h5,c4,h6,c4h6,o1,h1,o1h1,o1,h2,o1h2,o1,h3,o1h3,o1,h4,o1h4,o1,h5,o1h5,o1,h6,o1h6,o2,h1,o2h1,o2,h2,o2h2,o2,h3,o2h3,o2,h4,o2h4,o2,h5,o2h5,o2,h6,o2h6,o3,h1,o3h1,o3,h2,o3h2,o3,h3,o3h3,o3,h4,o3h4,o3,h5,o3h5,o3,h6,o3h6,o4,h1,o4h1,o4,h2,o4h2,o4,h3,o4h3,o4,h4,o4h4,o4,h5,o4h5,o4,h6,o4h6,o5,h1,o5h1,o5,h2,o5h2,o5,h3,o5h3,o5,h4,o5h4,o5,h5,o5h5,o5,h6,o5h6,o6,h1,o6h1,o6,h2,o6h2,o6,h3,o6h3,o6,h4,o6h4,o6,h5,o6h5,o6,h6,o6h6,c1,n,c1n,c2,n,c2n,c3,n,c3n,c4,n,c4n,h1,n,h1n,h2,n,h2n,h3,n,h3n,h4,n,h4n,h5,n,h5n,h6,n,h6n,n,p,np,c1,o1,c1o1,c1,o2,c1o2,c1,o3,c1o3,c2,o1,c2o1,c2,o2,c2o2,c2,o3,c1o3,c3,o1,c3o1,c3,o2,c3o2,c3,o3,c3o3,c4,o1,c4o1,c4,o2,c4o2,c4,o3,c4o3
+n,p
+
+formaldehyde
+With 3 h2o
+((c1[1],c2[2],c3[3],c4[4];p).0 | (h1[1];p).0 | (h2[2];p).0 | (o1[3],o2[4],n).0 | (h3[5];p).0 | (h4[6];p).0 | (o3[5],o4[6],n).0 | (h5[7];p).0 | (h6[8];p).0 | (o5[7],o6[8],n).0 | (h7[9];p).0 | (h8[10];p).0 | (o7[9],o8[10],n).0) \ {c1,c2,c3,c4,h1,h2,h3,h4,h5,h6,h7,h8,o1,o2,o3,o4,o5,o6,o7,o8,n,p,c1h1,c2h2}
+c1,h1,c1h1,c1,h2,c1h2,c1,h3,c1h3,c1,h4,c1h4,c1,h5,c1h5,c1,h6,c1h6,c1,h7,c1h7,c1,h8,c1h8,c2,h1,c2h1,c2,h2,c2h2,c2,h3,c2h3,c2,h4,c2h4,c2,h5,c2h5,c2,h6,c2h6,c2,h7,c2h7,c2,h8,c2h8,c3,h1,c3h1,c3,h2,c3h2,c3,h3,c3h3,c3,h4,c3h4,c3,h5,c3h5,c3,h6,c3h6,c3,h7,c3h7,c3,h8,c3h8,c4,h1,c4h1,c4,h2,c4h2,c4,h3,c4h3,c4,h4,c4h4,c4,h5,c4h5,c4,h6,c4h6,c4,h7,c4h7,c4,h8,c4h8,o1,h1,o1h1,o1,h2,o1h2,o1,h3,o1h3,o1,h4,o1h4,o1,h5,o1h5,o1,h6,o1h6,o1,h7,o1h7,o1,h7,o1h7,o2,h1,o2h1,o2,h2,o2h2,o2,h3,o2h3,o2,h4,o2h4,o2,h5,o2h5,o2,h6,o2h6,o2,h7,o2h7,o2,h8,o2h8,o3,h1,o3h1,o3,h2,o3h2,o3,h3,o3h3,o3,h4,o3h4,o3,h5,o3h5,o3,h6,o3h6,o3,h7,o3h7,o3,h8,o3h8,o4,h1,o4h1,o4,h2,o4h2,o4,h3,o4h3,o4,h4,o4h4,o4,h5,o4h5,o4,h6,o4h6,o4,h7,o4h7,o4,h8,o4h8,o5,h1,o5h1,o5,h2,o5h2,o4,h3,o5h3,o5,h4,o5h4,o5,h5,o5h5,o5,h6,o5h6,o5,h7,o5h7,o5,h8,o5h8,o6,h1,o6h1,o6,h2,o6h2,o6,h3,o6h3,o6,h4,o6h4,o4,h5,o6h5,o6,h6,o6h6,o6,h7,o6h7,o6,h8,o6h8,o7,h1,o7h1,o7,h2,o7h2,o7,h3,o7h3,o7,h4,o7h4,o4,h5,o7h5,o7,h6,o7h6,o7,h7,o7h7,o7,h8,o7h8,o8,h1,o8h1,o8,h2,o8h2,o4,h3,o8h3,o8,h4,o8h4,o4,h5,o8h5,o8,h6,o8h6,o8,h7,o8h7,o8,h8,o8h8,c1,n,c1n,c2,n,c2n,c3,n,c3n,c4,n,c4n,h1,n,h1n,h2,n,h2n,h3,n,h3n,h4,n,h4n,h5,n,h5n,h6,n,h6n,h7,n,h7n,h8,n,h8n,n,p,np,c1,o1,c1o1,c1,o2,c1o2,c1,o3,c1o3,c1,o4,c1o4,c1,o5,c1o5,c1,o6,c1o6,c1,o7,c1o7,c1,o8,c1o8,c2,o1,c2o1,c2,o2,c2o2,c2,o3,c3o3,c2,o4,c2o4,c2,o5,c2o5,c2,o6,c2o6,c2,o7,c2o7,c2,o8,c2o8,c3,o1,c3o1,c3,o2,c3o2,c3,o3,c3o3,c3,o4,c3o4,c3,o5,c3o5,c3,o6,c3o6,c3,o7,c3o7,c3,o8,c3o8,c4,o1,c4o1,c4,o2,c4o2,c4,o3,c4o3,c3,o4,c3o4,c3,o5,c3o5,c3,o6,c3o6,c3,o7,c3o7,c3,o8,c3o8
+n,p
+allowIntraMolecular=false
+
+formaldehyde with 3 h2o and proper resrictions
+(((c1[1],c2[2],c3[3],c4[4];p).0 | (h1[1];p).0 | (h2[2];p).0 | (o1[3],o2[4],n).0) \ {c1,c2,c3,c4,h1,h2,o1,o2,np,c1h1,c2h2} | ((h3[5];p).0 | (h4[6];p).0 | (o3[5],o4[6],n).0) \ {h3,h4,o3,o4,np} | ((h5[7];p).0 | (h6[8];p).0 | (o5[7],o6[8],n).0) \ {h5,h6,o5,o6,np} | ((h7[9];p).0 | (h8[10];p).0 | (o7[9],o8[10],n).0) \ {h7,h8,o7,o8,np} ) \ {n,p}
+c1,h1,c1h1,c1,h2,c1h2,c1,h3,c1h3,c1,h4,c1h4,c1,h5,c1h5,c1,h6,c1h6,c1,h7,c1h7,c1,h8,c1h8,c2,h1,c2h1,c2,h2,c2h2,c2,h3,c2h3,c2,h4,c2h4,c2,h5,c2h5,c2,h6,c2h6,c2,h7,c2h7,c2,h8,c2h8,c3,h1,c3h1,c3,h2,c3h2,c3,h3,c3h3,c3,h4,c3h4,c3,h5,c3h5,c3,h6,c3h6,c3,h7,c3h7,c3,h8,c3h8,c4,h1,c4h1,c4,h2,c4h2,c4,h3,c4h3,c4,h4,c4h4,c4,h5,c4h5,c4,h6,c4h6,c4,h7,c4h7,c4,h8,c4h8,o1,h1,o1h1,o1,h2,o1h2,o1,h3,o1h3,o1,h4,o1h4,o1,h5,o1h5,o1,h6,o1h6,o1,h7,o1h7,o1,h7,o1h7,o2,h1,o2h1,o2,h2,o2h2,o2,h3,o2h3,o2,h4,o2h4,o2,h5,o2h5,o2,h6,o2h6,o2,h7,o2h7,o2,h8,o2h8,o3,h1,o3h1,o3,h2,o3h2,o3,h3,o3h3,o3,h4,o3h4,o3,h5,o3h5,o3,h6,o3h6,o3,h7,o3h7,o3,h8,o3h8,o4,h1,o4h1,o4,h2,o4h2,o4,h3,o4h3,o4,h4,o4h4,o4,h5,o4h5,o4,h6,o4h6,o4,h7,o4h7,o4,h8,o4h8,o5,h1,o5h1,o5,h2,o5h2,o4,h3,o5h3,o5,h4,o5h4,o5,h5,o5h5,o5,h6,o5h6,o5,h7,o5h7,o5,h8,o5h8,o6,h1,o6h1,o6,h2,o6h2,o6,h3,o6h3,o6,h4,o6h4,o4,h5,o6h5,o6,h6,o6h6,o6,h7,o6h7,o6,h8,o6h8,o7,h1,o7h1,o7,h2,o7h2,o7,h3,o7h3,o7,h4,o7h4,o4,h5,o7h5,o7,h6,o7h6,o7,h7,o7h7,o7,h8,o7h8,o8,h1,o8h1,o8,h2,o8h2,o4,h3,o8h3,o8,h4,o8h4,o4,h5,o8h5,o8,h6,o8h6,o8,h7,o8h7,o8,h8,o8h8,c1,n,c1n,c2,n,c2n,c3,n,c3n,c4,n,c4n,h1,n,h1n,h2,n,h2n,h3,n,h3n,h4,n,h4n,h5,n,h5n,h6,n,h6n,h7,n,h7n,h8,n,h8n,n,p,np,c1,o1,c1o1,c1,o2,c1o2,c1,o3,c1o3,c1,o4,c1o4,c1,o5,c1o5,c1,o6,c1o6,c1,o7,c1o7,c1,o8,c1o8,c2,o1,c2o1,c2,o2,c2o2,c2,o3,c3o3,c2,o4,c2o4,c2,o5,c2o5,c2,o6,c2o6,c2,o7,c2o7,c2,o8,c2o8,c3,o1,c3o1,c3,o2,c3o2,c3,o3,c3o3,c3,o4,c3o4,c3,o5,c3o5,c3,o6,c3o6,c3,o7,c3o7,c3,o8,c3o8,c4,o1,c4o1,c4,o2,c4o2,c4,o3,c4o3,c3,o4,c3o4,c3,o5,c3o5,c3,o6,c3o6,c3,o7,c3o7,c3,o8,c3o8
+n,p
+allowIntraMolecular=false
+
+
+monsanto
+((a[14],a[21],a[22],a[23];b).0 | (d[11];g).0 | (h[21];k).0 | (h[22];k).0 | (h[23];k).0 | (i[14],i[12],j).0 | (h[12];k).0 | (h[11];k).0 | (f[3],f[4],f,f).0 | (a[4],a[18],a[19],a;b).0 | (i[18],i[19],j).0 | (d[3];g).0 | (a[24],a[25],a,a;b).0 | (i[24],i[25],j).0) \ {a,b,d,g,k,h,f,i,j}
+a,d,l,a,h,m,f,a,n,f,d,o,a,i,p,f,b,q,a,b,r,d,b,t,j,k,u,d,h,v,i,h,w,i,b,x,d,k,y,h,j,z
+b,g,k,e,j
+allowIntraMolecular=true
+start mit 3-1-2-6
+
+irek example forward-reverse
+((e).0 | (a;g).0 | (b;f).0 | (d).0) \ {c}
+a,b,c,a,e,h,b,d,i,g,f,j
+g,f
+
+
+ber
+((p3,p5[1],d,b[5]).0 | (p3[1],p5[3],d,b[4]).0 | (p3[3],p5,d,b[9]).0 | (b[5];i).(a[6]).0 | (b[7];i).(t[6]).0 | (b[8];i).(g).0 | (b[9];i).(g[10]).0 | (b[4];e).(u).0 | (b[11];i).(c[10]).0 | (p3,p5[12],d,b[7]).0 | (p3[12],p5[13],d,b[8]).0 | (p3[13],p5,d,b[11]).0 | (h;f).(e).0) \ {p3,p5,d,b,a,t,g,e,u,c,h,f,i}
+p3,p5,p,b,b,bb,a,t,at,g,c,gc,h,d,hd,e,e,ee,f,d,fd
+e,f,i
+
+i2,i2,i7
+
+TODO
+underlined in restriction?
+does \ c2h2 block the concerted action?
+do we have anything preventing intra-molecular actions? (that related to the problem of spatial configurations)
+the c1h1 restrictions restrict breaking as well
