@@ -22,7 +22,7 @@ public abstract class Process {
 	public abstract void accept(CCBVisitor visitor);
     public abstract Process clone();
 	public abstract String toString(Action actionperformed1, Action actionperformed2, Action triggeredAction);
-    public abstract void removeKey(int bondnumber);
+    public abstract boolean removeKey(int bondnumber);
     public abstract int[] getKeys();
     public int counter=-1;
     

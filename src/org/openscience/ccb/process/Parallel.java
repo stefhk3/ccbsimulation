@@ -224,9 +224,10 @@ public class Parallel extends Process {
 
 
     @Override
-    public void removeKey(int bondnumber) {
-        this.left.removeKey(bondnumber);
-        this.right.removeKey(bondnumber);
+    public boolean removeKey(int bondnumber) {
+        boolean leftremoved=this.left.removeKey(bondnumber);
+        boolean rightremoved=this.right.removeKey(bondnumber);
+        return leftremoved || rightremoved;
     }
 
 

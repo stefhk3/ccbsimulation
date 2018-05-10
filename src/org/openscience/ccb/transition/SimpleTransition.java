@@ -17,10 +17,11 @@ public class SimpleTransition extends Transition {
 	
 	
 	/**
-	 * This builds a transition undoing an action
+	 * This builds a transition doing or undoing an action
 	 * 
 	 * @param process         The (sub-)process on which this actions works.
-	 * @param actionundone    The action to undo.
+	 * @param actionundone    The action to (un)do.
+	 * @param undo            If true, this is an undo action, else it is a forward action.
 	 */
 	public SimpleTransition(Process process, Action actionundone, boolean undo){
 		this.subprocesstransitioning=process;

@@ -165,8 +165,8 @@ public class Restriction extends Process {
     }
 
     @Override
-    public void removeKey(int bondnumber) {
-        this.process.removeKey(bondnumber);        
+    public boolean removeKey(int bondnumber) {
+        return this.process.removeKey(bondnumber);        
     }
 
 	@Override

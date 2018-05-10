@@ -320,16 +320,17 @@ public class Prefix extends Process {
     }
 
     @Override
-    public void removeKey(int bondnumber) {
+    public boolean removeKey(int bondnumber) {
         for(Action action : pastactions){
             if(action.getKey()==bondnumber){
                 action.setKey(0);
                 pastactions.remove(action);
                 freshactions.add(action);
                 this.process.removeKey(bondnumber);
-                break;
+                return true;
             }
         }        
+        return false;
     }
 
 	@Override

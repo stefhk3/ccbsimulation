@@ -58,6 +58,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextInputDialog;
@@ -86,7 +87,8 @@ public class CCBgui extends Application {
     Synchronize synchronize = new Synchronize(new String[]{});
     Canvas canvas;
     int newkey=100;
-    Label previous;
+    ObservableList<Process> previousitems;
+	ListView<Process> previous;
     FileChooser fileChooser=new FileChooser();
     Stage stage;
     List<Action> weakActionsList;
@@ -115,15 +117,16 @@ public class CCBgui extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		SplitPane splitPane=new SplitPane();
-		previous=new Label();
-		ScrollPane previousscroll=new ScrollPane();
-		previousscroll.setContent(previous);
-		previousscroll.setHbarPolicy(ScrollBarPolicy.AS_NEEDED);
-		previousscroll.setPrefHeight(200);
+		previous=new ListView<Process>();
+		previous.setMaxHeight(Double.MAX_VALUE);
+		previous.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+		previousitems=FXCollections.observableArrayList();
+		previous.setItems(previousitems);
 		VBox vbox=new VBox();
 		vbox.setSpacing(10);
 		listView=new ListView<Transition>();
 		listView.setMaxHeight(Double.MAX_VALUE);
+		listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		items=FXCollections.observableArrayList();
 		listView.setItems(items);
 		listView.getSelectionModel().selectedItemProperty().addListener(new TransitionSelectionAction());
@@ -144,7 +147,7 @@ public class CCBgui extends Application {
 		hbox.getChildren().addAll(btnAll, btnSelected, btnAdd, btnRemove, btnBreak);
 		VBox.setVgrow(listView, Priority.ALWAYS);
 		vbox.setPadding(new Insets(10,10,10,10));
-		vbox.getChildren().addAll(previousscroll,listView,hbox, detailsCanvasPane);
+		vbox.getChildren().addAll(previous,listView,hbox, detailsCanvasPane);
 		CanvasPane canvasPane=new CanvasPane(500,500);
 		canvas=canvasPane.getCanvas();
 		splitPane.getItems().addAll(vbox, canvasPane);
@@ -255,18 +258,48 @@ public class CCBgui extends Application {
 
 		@Override
 		public void handle(ActionEvent event) {
+			if(previous.getSelectionModel().getSelectedItems().size()==0){
+				Alert alert=new Alert(AlertType.WARNING,"You did not select anything. A selection is needed to break a bond.");
+				alert.setTitle("No selection");
+				alert.setHeaderText(null);
+				alert.showAndWait();				
+			}
 			TextInputDialog tid=new TextInputDialog();
 			tid.setTitle("Enter number of bond to break");
 			tid.setHeaderText(null);
-			tid.setContentText("Enter weak actions:");
+			tid.setContentText("Break bond:");
 			Optional<String> result = null;
 			while(result==null || !result.isPresent()){
 				try{
 					result=tid.showAndWait();
 					if(!result.isPresent())
 						return;
-					int tobreak=Integer.parseInt(result.get());
-					
+					int bondnumber=Integer.parseInt(result.get());
+		    		CCBVisitor move = new Move();
+		    		CCBVisitor prom = new Prom();
+					List<Process> processes=previous.getSelectionModel().getSelectedItems();
+					newProcesses.clear();
+					ObservableList<Process> previousitemsnew=FXCollections.observableArrayList();
+					List<Transition> transitions=new ArrayList<Transition>();
+					for(Process process : processes){
+						Process origin=process;
+						Process target=process.clone();
+						boolean removed=target.removeKey(bondnumber);
+						if(removed){
+			                target.counter=processcounter;
+			                processcounter++;
+		                    if(ccbconfiguration.forceMove)
+		                    	target.accept(move);
+		                    if(ccbconfiguration.forcePromotion)
+		                    	target.accept(prom);
+						}
+						handleProcess(target, previousitemsnew, transitions, origin);
+					}
+					draw(doneProcesses, detailscanvas, true);
+					items.clear();
+					items.addAll(transitions);
+					previousitems.clear();
+					previousitems.addAll(previousitemsnew);
 				}catch(Exception ex){
 					Alert alert=new Alert(AlertType.ERROR);
 					alert.setTitle("Error");
@@ -309,14 +342,13 @@ public class CCBgui extends Application {
 				newProcesses.clear();
 				doneProcesses=new AsUnweightedDirectedGraph<Process, DefaultEdge>(new DefaultDirectedWeightedGraph<Process, DefaultEdge>(DefaultEdge.class));
 			    synchronize = new Synchronize(gamma);
-				StringBuffer previousText=new StringBuffer();
 				List<Transition> transitions=new ArrayList<Transition>();
+				previousitems.clear();
 				for(int i=0;i<ccb.getFirstChildElement("processes").getChildCount();i++){
 					Process process=CCBParser.parseProcess(ccb.getFirstChildElement("processes").getChildElements().get(i), gamma, weakActionsList);
-					handleProcess(process, previousText, transitions,null);
+					handleProcess(process, previousitems, transitions,null);
 		    	}
 				draw(doneProcesses, detailscanvas, true);
-				previous.setText(previousText.toString());
 				items.clear();
 				items.addAll(transitions);
 			}catch(Exception ex){
@@ -328,8 +360,8 @@ public class CCBgui extends Application {
 	}
 
 	
-	private void handleProcess(Process process, StringBuffer previousText, List<Transition> transitions, Process origin) throws CCBException {
-		previousText.append(process.toString()+"\r\n");
+	private void handleProcess(Process process, ObservableList<Process> previousitems, List<Transition> transitions, Process origin) throws CCBException {
+		previousitems.add(process);
 	    List<Transition> localTransitions = process.inferTransitions(synchronize, ccbconfiguration, process);
 	    List<Transition> newTransitions = new ArrayList<Transition>();
 	    List<Process> checkedProcesses=new ArrayList<Process>();
@@ -407,9 +439,9 @@ public class CCBgui extends Application {
 					alert.showAndWait();
 					processes=items;
 				}
-				StringBuffer previousText=new StringBuffer();
 				newProcesses.clear();
 				List<Transition> transitions=new ArrayList<Transition>();
+                previousitems.clear();
 				for(Transition process : processes){
 					Process origin=process.getClone().clone();
 					process.getClone().executeTransition(process, newkey++, process.getClone());
@@ -424,11 +456,10 @@ public class CCBgui extends Application {
                     		oldprocess=p;
                     }
                     if(oldprocess==null){
-                    	handleProcess(process.getClone(), previousText, transitions,origin);
+                    	handleProcess(process.getClone(), previousitems, transitions,origin);
                     }
 				}
             	draw(doneProcesses, detailscanvas, true);
-				previous.setText(previousText.toString());
 				items.clear();
 				items.addAll(transitions);
 	    	}catch(Exception ex){
@@ -514,9 +545,8 @@ public class CCBgui extends Application {
 					processcounter=1;
 					draw(doneProcesses, detailscanvas, true);
 					List<Transition> transitions=new ArrayList<Transition>();
-					StringBuffer previousText=new StringBuffer();
-					handleProcess(process, previousText, transitions,null);
-					previous.setText(previousText.toString());
+					previousitems.clear();
+					handleProcess(process, previousitems, transitions,null);
 					items.addAll(transitions);
 					newProcesses.clear();
 					newProcesses.put(process,transitions);

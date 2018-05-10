@@ -73,8 +73,9 @@ public class Nil extends Process {
 	}
 
     @Override
-    public void removeKey(int bondnumber) {
-        //Nothing to do       
+    public boolean removeKey(int bondnumber) {
+        //Nothing to do
+    	return false;
     }
 
 	@Override
