@@ -140,7 +140,7 @@ public class CCBgui extends Application {
 		Button btnRemove=new Button("Remove process");
 		//TODO btnSettings.setOnAction(new SettingsAction());
 		Button btnBreak=new Button("Break bond");
-		btnBreak.setOnAction(new AddAction());
+		btnBreak.setOnAction(new BreakAction());
 		hbox.getChildren().addAll(btnAll, btnSelected, btnAdd, btnRemove, btnBreak);
 		VBox.setVgrow(listView, Priority.ALWAYS);
 		vbox.setPadding(new Insets(10,10,10,10));
@@ -250,6 +250,34 @@ public class CCBgui extends Application {
 	    }
 	}
 
+	
+	private class BreakAction implements EventHandler<ActionEvent> {
+
+		@Override
+		public void handle(ActionEvent event) {
+			TextInputDialog tid=new TextInputDialog();
+			tid.setTitle("Enter number of bond to break");
+			tid.setHeaderText(null);
+			tid.setContentText("Enter weak actions:");
+			Optional<String> result = null;
+			while(result==null || !result.isPresent()){
+				try{
+					result=tid.showAndWait();
+					if(!result.isPresent())
+						return;
+					int tobreak=Integer.parseInt(result.get());
+					
+				}catch(Exception ex){
+					Alert alert=new Alert(AlertType.ERROR);
+					alert.setTitle("Error");
+					alert.setHeaderText(null);
+					alert.setContentText(ex.getMessage());
+					alert.showAndWait();
+					result=null;
+				}
+			}
+		}
+	}
 	
 	private class LoadAction implements EventHandler<ActionEvent> {
 
