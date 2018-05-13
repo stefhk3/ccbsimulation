@@ -32,7 +32,6 @@ public class SpecialCasesTest extends TestCase{
         Properties ccbprops = new Properties();
         ccbprops.load(inputStream);
         ccbconfiguration=new CCBConfiguration(ccbprops);
-        ccbconfiguration.allowSpontaneousBreaks=true;
     }
 
 	//There should be no transition possible in this case
@@ -54,8 +53,8 @@ public class SpecialCasesTest extends TestCase{
 		Process p1=new CCBParser().parseProcess(input,weakActions,null,null);
 		Assert.assertEquals("((c1[1],c2[2],_c3[3],c4[10];p).0 | (h1[1];p).0 | (h2[2];p).0 | (n,o2,_o1[3]).0 | (h3[11];p).0 | (h4[6];p).0 | (n,o4[6],o3[10]).0 | (h5[7];p).0 | (h6[8];p).0 | (o5[7],o6[8],n[11]).0) \\ {c1,c2,c3,c4,h1,h2,h3,h4,h5,h6,o1,o2,o3,o4,o5,o6,n,p,c1h1,c2h2}",  p1.toString());
 		List<Transition> transitions=p1.inferTransitions(synchronize, ccbconfiguration, p1);
-		Assert.assertEquals(19, transitions.size());
-		for(int i=0;i<19;i++)
+		Assert.assertEquals(12, transitions.size());
+		for(int i=0;i<12;i++)
 			p1.executeTransition(transitions.get(i), 1, p1);
 	}
 
@@ -79,8 +78,8 @@ public class SpecialCasesTest extends TestCase{
         Assert.assertEquals(input, process.toString());
         Synchronize synchronize=new Synchronize(new String[]{"n","p","np","o1","h4","o1h4"});
         List<Transition> transitions = process.inferTransitions(synchronize, ccbconfiguration, process);
-        Assert.assertEquals(2,transitions.size());
-        process.executeTransition(transitions.get(1), 1, process);
+        Assert.assertEquals(1,transitions.size());
+        process.executeTransition(transitions.get(0), 1, process);
         transitions = process.inferTransitions(synchronize, ccbconfiguration, process);
         Assert.assertEquals(1,transitions.size());
         
@@ -90,6 +89,6 @@ public class SpecialCasesTest extends TestCase{
 		String input="(d[101];d).(e).0";
 		Process process=new CCBParser().parseProcess(input,null,null);
 		List<Transition> trans = process.inferTransitions(new Synchronize(new String[0]), ccbconfiguration, process);
-		Assert.assertEquals(3, trans.size());		
+		Assert.assertEquals(2, trans.size());		
 	}
 }

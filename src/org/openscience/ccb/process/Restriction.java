@@ -82,7 +82,7 @@ public class Restriction extends Process {
 				if(secondTriggered!=null && synchronize.isSychronized(transition.getTriggeredTransition().getActionperformed().getActionName(),secondTriggered.getActionperformed().getActionName())!=null && restrictions.contains(new StrongAction(synchronize.isSychronized(transition.getTriggeredTransition().getActionperformed().getActionName(),secondTriggered.getActionperformed().getActionName()))))
 					triggeredrestricted=true;
 			}
-			if(!restrictions.contains(transition.getActionperformed()) && !triggeredrestricted){// && secondTriggered!=null){
+			if(!restrictions.contains(new StrongAction(transition.getActionperformed().getActionName())) && !triggeredrestricted){// && secondTriggered!=null){
 				//TODO needed? transition.setSubprocesstransitioning(process);
 				unrestrictedTransitions.add(transition);
 			}

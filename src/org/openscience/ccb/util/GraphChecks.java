@@ -92,7 +92,7 @@ public class GraphChecks {
     }
 
     public boolean areConnected(Process p1, Process p2){
-        return new ConnectivityInspector<Process, DefaultEdge>((UndirectedGraph<Process, DefaultEdge>) graph).pathExists(p1, p2);
+        return new ConnectivityInspector<Process, DefaultEdge>((DefaultDirectedWeightedGraph<Process, DefaultEdge>) graph).pathExists(p1, p2);
     }
     
     public boolean isIsomorph(Process p2) throws CCBException{
