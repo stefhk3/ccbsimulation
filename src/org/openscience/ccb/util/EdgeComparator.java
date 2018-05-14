@@ -2,17 +2,16 @@ package org.openscience.ccb.util;
 
 import java.util.Comparator;
 
-import org.jgrapht.graph.DefaultDirectedGraph;
+import org.jgrapht.graph.AbstractBaseGraph;
 import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.graph.SimpleWeightedGraph;
 import org.openscience.ccb.process.Process;
 
 public class EdgeComparator implements Comparator<DefaultEdge> {
     
-	DefaultDirectedGraph<Process, DefaultEdge> graph1;
-	DefaultDirectedGraph<Process, DefaultEdge> graph2;
+	AbstractBaseGraph<Process, DefaultEdge> graph1;
+	AbstractBaseGraph<Process, DefaultEdge> graph2;
     
-    public EdgeComparator(DefaultDirectedGraph<Process, DefaultEdge> graph1, DefaultDirectedGraph<Process, DefaultEdge> graph2){
+    public EdgeComparator(AbstractBaseGraph<Process, DefaultEdge> graph1, AbstractBaseGraph<Process, DefaultEdge> graph2){
         this.graph1=graph1;
         this.graph2=graph2;
     }
