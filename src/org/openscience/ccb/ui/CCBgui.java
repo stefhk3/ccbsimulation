@@ -122,6 +122,12 @@ public class CCBgui extends Application {
 		previous.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		previousitems=FXCollections.observableArrayList();
 		previous.setItems(previousitems);
+		previous.getSelectionModel().selectedItemProperty().addListener(new ProcessSelectionAction());
+		previous.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+			if (newValue) {
+				listView.getSelectionModel().clearSelection();
+			}
+		});
 		VBox vbox=new VBox();
 		vbox.setSpacing(10);
 		listView=new ListView<Transition>();
@@ -130,6 +136,11 @@ public class CCBgui extends Application {
 		items=FXCollections.observableArrayList();
 		listView.setItems(items);
 		listView.getSelectionModel().selectedItemProperty().addListener(new TransitionSelectionAction());
+		listView.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+			if (newValue) {
+				previous.getSelectionModel().clearSelection();
+			}
+		});
 		CanvasPane detailsCanvasPane=new CanvasPane(500,500);
 		detailscanvas=detailsCanvasPane.getCanvas();
 		HBox hbox=new HBox();
@@ -138,13 +149,11 @@ public class CCBgui extends Application {
 		btnAll.setOnAction(new EvaluateAction());
 		Button btnSelected=new Button("Evaluate selected");
 		btnSelected.setOnAction(new EvaluateAction());
-		Button btnAdd=new Button("Add process");
-		btnAdd.setOnAction(new AddAction());
 		Button btnRemove=new Button("Remove process");
-		//TODO btnSettings.setOnAction(new SettingsAction());
+		btnRemove.setOnAction(new RemoveAction());
 		Button btnBreak=new Button("Break bond");
 		btnBreak.setOnAction(new BreakAction());
-		hbox.getChildren().addAll(btnAll, btnSelected, btnAdd, btnRemove, btnBreak);
+		hbox.getChildren().addAll(btnAll, btnSelected, btnRemove, btnBreak);
 		VBox.setVgrow(listView, Priority.ALWAYS);
 		vbox.setPadding(new Insets(10,10,10,10));
 		vbox.getChildren().addAll(previous,listView,hbox, detailsCanvasPane);
@@ -156,7 +165,7 @@ public class CCBgui extends Application {
 		Menu fileMenu=new Menu("File");
 		menuBar.getMenus().add(fileMenu);
 		MenuItem newItem=new MenuItem("New...");
-		newItem.setOnAction(new AddAction());
+		newItem.setOnAction(new NewAction());
 		fileMenu.getItems().add(newItem);
 		MenuItem loadItem=new MenuItem("Open...");
 		loadItem.setOnAction(new LoadAction());
@@ -227,6 +236,22 @@ public class CCBgui extends Application {
 		}
 	}
 	
+	private class ProcessSelectionAction implements ChangeListener<Process> {
+	    @Override
+	    public void changed(ObservableValue<? extends Process> observable, Process oldValue, Process newValue) {
+	    	if(newValue==null)
+	    		return;
+			try{
+		    	GraphChecks gc=new GraphChecks(newValue);
+		    	draw(gc.getGraph(), canvas, false);
+			}catch(Exception ex){
+				ex.printStackTrace();
+				//TODO handle exceptions
+			}
+	    }
+	}
+
+		
 	private class TransitionSelectionAction implements ChangeListener<Transition> {
 
 	    @Override
@@ -366,6 +391,7 @@ public class CCBgui extends Application {
 	    List<Transition> newTransitions = new ArrayList<Transition>();
 	    List<Process> checkedProcesses=new ArrayList<Process>();
 	    transitionsmap=new HashMap<Integer, Integer>();
+        doneProcesses.addVertex(process);
         for(int k=0;k<localTransitions.size();k++){
             Process clone=process.clone();
             Transition transition = clone.inferTransitions(synchronize, ccbconfiguration, clone).get(k);
@@ -388,9 +414,7 @@ public class CCBgui extends Application {
                 for(Process doneprocess : doneProcesses.vertexSet()){
                     if(gc.isIsomorph(doneprocess)){
                         existing=true;
-                		//doneProcesses.addEdge(clonedProcess,process);
-                        //edge hinzufügen und deaktivierte transition
-                        System.out.println("doppel");
+                		doneProcesses.addEdge(doneprocess,process);
                 		break;
                     }
                 }
@@ -409,7 +433,6 @@ public class CCBgui extends Application {
         }
 		newProcesses.put(process,newTransitions);
 		transitions.addAll(newTransitions);
-        doneProcesses.addVertex(process);
         if(origin!=null){
             GraphChecks gc=new GraphChecks(origin);
             for(Process p : doneProcesses.vertexSet()){
@@ -421,6 +444,22 @@ public class CCBgui extends Application {
         }
 	}
 
+	
+	private class RemoveAction implements EventHandler<ActionEvent> {
+
+		@Override
+		public void handle(ActionEvent event) {
+			if(listView.getSelectionModel().getSelectedItems().size()==0){
+				Alert alert=new Alert(AlertType.WARNING,"You did not select anything, we remove nothing!");
+				alert.setTitle("No selection");
+				alert.setHeaderText(null);
+				alert.showAndWait();
+			}else {
+				items.removeAll(listView.getSelectionModel().getSelectedItems());
+			}
+		}
+	}
+	
 	
 	private class EvaluateAction implements EventHandler<ActionEvent> {
 
@@ -473,7 +512,7 @@ public class CCBgui extends Application {
 		}
 	}
 	
-	private class AddAction implements EventHandler<ActionEvent> {
+	private class NewAction implements EventHandler<ActionEvent> {
 
 		@Override
 		public void handle(ActionEvent event) {
@@ -546,6 +585,7 @@ public class CCBgui extends Application {
 					draw(doneProcesses, detailscanvas, true);
 					List<Transition> transitions=new ArrayList<Transition>();
 					previousitems.clear();
+					items.clear();
 					handleProcess(process, previousitems, transitions,null);
 					items.addAll(transitions);
 					newProcesses.clear();
@@ -604,6 +644,8 @@ public class CCBgui extends Application {
 	    		greatesty=jgxAdapter.getModel().getGeometry(cell).getY();
 	    }
 	    double sizex=canvas.getWidth()-40;//we keep 20 as margin
+	    if(canvas==this.canvas)
+	    	sizex=canvas.getWidth()-100;//more margin on molecule canvas
 	    double sizey=canvas.getHeight()-40;//we keep 20 as margin
 	    if(sizex<20 || sizey<20)
 	    	return;

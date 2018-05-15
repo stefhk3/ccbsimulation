@@ -60,7 +60,7 @@ public class Communication extends Transition {
 	
 	@Override
 	public String toString(){
-		return "P"+this.getClone().counter+" "+subprocesstransitioning.toString(transition1.getActionperformed(),transition2.getActionperformed(), (transition1.getTriggeredTransition()!=null ? transition1.getTriggeredTransition().getActionperformed() : (transition2.getTriggeredTransition() !=null ? transition2.getTriggeredTransition().getActionperformed() : null )))+";"+actionperformed+";"+keybroken;
+		return (this.getClone()!=null ? "P"+this.getClone().counter : "")+" "+subprocesstransitioning.toString(transition1.getActionperformed(),transition2.getActionperformed(), (transition1.getTriggeredTransition()!=null ? transition1.getTriggeredTransition().getActionperformed() : (transition2.getTriggeredTransition() !=null ? transition2.getTriggeredTransition().getActionperformed() : null )))+";"+actionperformed+";"+keybroken;
 	}
 	
 	@Override
