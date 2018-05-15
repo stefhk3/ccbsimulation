@@ -51,13 +51,12 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.SplitPane;
@@ -206,36 +205,44 @@ public class CCBgui extends Application {
 
 		@Override
 		public void handle(ActionEvent event) {
-			PrintWriter out=null;
-			try{
-				File file=fileChooser.showSaveDialog(stage);
-				out=new PrintWriter(file);
-				Element root=new Element("ccb");
-				Element processes=new Element("processes");
-				root.appendChild(processes);
-				for(Process p : newProcesses.keySet()){
-					processes.appendChild(p.getXML());
-				}
-				root.appendChild(synchronize.getXML());
-				Element weakactions=new Element("weakactions");
-				for(Action action : weakActionsList){
-					Element actionel=new Element("action");
-					actionel.appendChild(action.getActionName());
-					weakactions.appendChild(actionel);
-				}
-				root.appendChild(weakactions);
-				Document doc=new Document(root);
-				out.println(doc.toXML());
-			}catch(Exception ex){
-				ex.printStackTrace();
-				//TODO handle exceptions
-			}
-			finally{
-				out.close();
-			}
+			doSave();
 		}
 	}
 	
+
+	private void doSave() {
+		PrintWriter out=null;
+		try{
+			File file=fileChooser.showSaveDialog(stage);
+			if(file==null)
+				return;
+			out=new PrintWriter(file);
+			Element root=new Element("ccb");
+			Element processes=new Element("processes");
+			root.appendChild(processes);
+			for(Process p : newProcesses.keySet()){
+				processes.appendChild(p.getXML());
+			}
+			root.appendChild(synchronize.getXML());
+			Element weakactions=new Element("weakactions");
+			for(Action action : weakActionsList){
+				Element actionel=new Element("action");
+				actionel.appendChild(action.getActionName());
+				weakactions.appendChild(actionel);
+			}
+			root.appendChild(weakactions);
+			Document doc=new Document(root);
+			out.println(doc.toXML());
+		}catch(Exception ex){
+			ex.printStackTrace();
+			//TODO handle exceptions
+		}
+		finally{
+			if(out!=null)
+				out.close();
+		}
+	}
+
 	private class ProcessSelectionAction implements ChangeListener<Process> {
 	    @Override
 	    public void changed(ObservableValue<? extends Process> observable, Process oldValue, Process newValue) {
@@ -516,6 +523,20 @@ public class CCBgui extends Application {
 
 		@Override
 		public void handle(ActionEvent event) {
+			if(previousitems.size()>0) {
+				ButtonType btnYes = new ButtonType("Yes", ButtonBar.ButtonData.YES);
+				ButtonType btnNo = new ButtonType("No", ButtonBar.ButtonData.NO);
+				ButtonType btnCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+				Alert alert=new Alert(AlertType.WARNING,"There are current processes. Do you want to save these?",btnYes, btnNo, btnCancel);
+				alert.setTitle("Current state not empty");
+				alert.setHeaderText(null);
+				Optional<ButtonType> result = alert.showAndWait();				
+				if(result.get()==btnCancel) {
+					return;
+				}else if(result.get()==btnYes) {
+					doSave();
+				}
+			}
 			TextInputDialog tid=new TextInputDialog();
 			tid.setTitle("Enter weak actions (list like n,p)");
 			tid.setHeaderText(null);
