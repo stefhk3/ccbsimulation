@@ -64,7 +64,6 @@ public class ReductionsTest extends TestCase{
 		CCBVisitor prom = new Prom();
 		p1.accept(prom);
 		Assert.assertEquals("((a[2];b).0 | (a).0 | (b[2]).0) \\ {a,b}",  p1.toString());
-		//TODO test for past and fresh actions
 	}
 	
 	public void testMove() throws CCBException{

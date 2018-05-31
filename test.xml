@@ -1,3 +1,0 @@
-<?xml version="1.0"?>
-<ccb><processes><prefix><action>a</action><action>b</action><action>c</action><action>d</action><nil /></prefix></processes><synchronizes /><weakactions><action>f</action></weakactions></ccb>
-

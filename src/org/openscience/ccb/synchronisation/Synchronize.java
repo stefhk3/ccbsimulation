@@ -46,7 +46,10 @@ public class Synchronize {
 			first.appendChild(it.next());
 			synchro.appendChild(first);
 			Element second=new Element("second");
-			second.appendChild(it.next());
+			if(it.hasNext())
+				second.appendChild(it.next());
+			else
+				second.appendChild(first.getChild(0).getValue());
 			synchro.appendChild(second);
 			Element result=new Element("result");
 			result.appendChild(gamma.get(pair));

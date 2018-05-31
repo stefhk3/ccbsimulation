@@ -41,7 +41,7 @@ public class CCBParser {
 	
 	public Process parseProcess(String input, List<Action> weakActionsList, Connectivity conn, Distance dist) throws CCBException{
 		//We look at the different operators, starting from the ouside
-		String patternRestriction="\\s\\\\\\s\\{[A-Za-z_0-9,]*\\}$"; //TODO regex like [A-Za-z_]
+		String patternRestriction="\\s\\\\\\s\\{[A-Za-z_0-9,]*\\}$";
 		Pattern word = Pattern.compile(patternRestriction);
 		Matcher match = word.matcher(input);
 		if(stringContainsPipeOnFirstLevel(input)>-1){

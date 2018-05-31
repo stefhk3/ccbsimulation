@@ -52,7 +52,7 @@ public class SimpleTransition extends Transition {
 	
 	@Override
 	public String toString(){
-		return (this.getClone()!=null ? "P"+this.getClone().counter : "")+" "+subprocesstransitioning.toString(actionperformed,null, triggeredTransition!=null ? triggeredTransition.getActionperformed() : null)+";"+actionperformed+";"+keybroken;
+		return (this.getClone()!=null && this.getClone().counter>-1 ? "P"+this.getClone().counter : "")+" "+subprocesstransitioning.toString(actionperformed,null, triggeredTransition!=null ? triggeredTransition.getActionperformed() : null)+";"+actionperformed+";"+keybroken;
 	}
 
 	@Override

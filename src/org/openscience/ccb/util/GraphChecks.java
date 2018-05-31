@@ -28,30 +28,33 @@ public class GraphChecks {
         graph=createGraph(p);
     }
 
-    private void followProcess(Process p, AbstractBaseGraph<Process, DefaultEdge> graph2){
+    private void followProcess(Process p, AbstractBaseGraph<Process, DefaultEdge> graph2, Process previous){
         if(p==null)
             return;
         else{
             if(p instanceof Nil)
                 return;
             else if(p instanceof Parallel){
-                followProcess(((Parallel)p).getLeft(), graph2);
-                followProcess(((Parallel)p).getRight(), graph2);
+                followProcess(((Parallel)p).getLeft(), graph2, null);
+                followProcess(((Parallel)p).getRight(), graph2, null);
             }else if(p instanceof Prefix){
-                graph2.addVertex(p);
-                followProcess(((Prefix)p).getProcess(), graph2);
+                if(p instanceof Prefix)
+                	followProcess(((Prefix)p).getProcess(), graph2, p);
+            	if(previous==null){
+            		graph2.addVertex(p);
+            	}
                 for(Action action : ((Prefix)p).getPastactions()){
                     if(!edgesprovisional.containsKey(action.getKey()))
                         edgesprovisional.put(action.getKey(), new ArrayList<Process>());
-                    edgesprovisional.get(action.getKey()).add(p);
+                    edgesprovisional.get(action.getKey()).add(previous==null ? p : previous);
                 }
                 if(((Prefix)p).getWeakAction()!=null && ((Prefix)p).getWeakAction().getKey()!=0){
                     if(!edgesprovisional.containsKey(((Prefix)p).getWeakAction().getKey()))
                         edgesprovisional.put(((Prefix)p).getWeakAction().getKey(), new ArrayList<Process>());
-                    edgesprovisional.get(((Prefix)p).getWeakAction().getKey()).add(p);                	
+                    edgesprovisional.get(((Prefix)p).getWeakAction().getKey()).add(previous==null ? p : previous);                	
                 }
             }else if(p instanceof Restriction){
-                followProcess(((Restriction)p).getProcess(), graph2);
+                followProcess(((Restriction)p).getProcess(), graph2, null);
             }
         }
     }
@@ -65,7 +68,7 @@ public class GraphChecks {
     {
     	AbstractBaseGraph<Process, DefaultEdge> graph = new SimpleGraph<Process, DefaultEdge>(DefaultEdge.class);
         edgesprovisional = new HashMap<Integer, List<Process>>();
-        followProcess(p, graph);
+        followProcess(p, graph, null);
         
         for(int key : edgesprovisional.keySet()){
             if(edgesprovisional.get(key).size()==2){

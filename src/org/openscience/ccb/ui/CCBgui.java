@@ -218,6 +218,9 @@ public class CCBgui extends Application {
 				return;
 			out=new PrintWriter(file);
 			Element root=new Element("ccb");
+			Element pc =new Element("processcounter");
+			pc.appendChild(Integer.toString(processcounter));
+			root.appendChild(pc);
 			Element processes=new Element("processes");
 			root.appendChild(processes);
 			for(Process p : newProcesses.keySet()){
@@ -581,6 +584,7 @@ public class CCBgui extends Application {
 					alert.setContentText(ex.getMessage());
 					alert.showAndWait();
 					result=null;
+					ex.printStackTrace();
 				}
 			}
 			tid=new TextInputDialog();

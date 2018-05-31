@@ -252,7 +252,6 @@ public class Prefix extends Process {
 						return;
 					}
 				}
-				//TODO can this ever happen?
 				if(weakAction!=null && weakAction.equals(transition.getActionperformed())){
 					weakAction.setKey(0);
 				}

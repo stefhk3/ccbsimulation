@@ -27,8 +27,6 @@ import org.openscience.ccb.util.GraphChecks;
 
 public class CCBcommandline {
     
-    //TODO if (a;b[2]).0 can a be executed? or do we not have this?
-
 	public static void main(String[] args) throws CCBException, IOException, SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException {
 		CCBParser ccbparser=new CCBParser();
 	    InputStream inputStream = ccbparser.getClass().getClassLoader().getResourceAsStream("ccbconfiguration_default.properties");

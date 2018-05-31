@@ -37,9 +37,3 @@ p3,p5,p,b,b,bb,a,t,at,g,c,gc,h,d,hd,e,e,ee,f,d,fd
 e,f,i
 
 i2,i2,i7
-
-TODO
-underlined in restriction?
-does \ c2h2 block the concerted action?
-do we have anything preventing intra-molecular actions? (that related to the problem of spatial configurations)
-the c1h1 restrictions restrict breaking as well

@@ -72,7 +72,7 @@ public class Parallel extends Process {
 			Transition leftTransition=itleft.next();
 			Iterator<Transition> itright = rightTransitions.iterator();
 			while (itright.hasNext()) {
-				//only simple transitions can communicate (TODO is this true?)
+				//only simple transitions can communicate
 				Transition rightTransition=itright.next();
 				if(leftTransition instanceof SimpleTransition && rightTransition instanceof SimpleTransition){
 					//both transitions must either be forward or reverse
@@ -94,7 +94,7 @@ public class Parallel extends Process {
 						
 						//TODO this requires lookahead, maybe unified later
 						if(((SimpleTransition)leftTransition).getActionperformed() instanceof PastSemicolonAction && ((SimpleTransition)rightTransition).getActionperformed() instanceof PastSemicolonAction){
-							//For forward transitions we need to find matching transitions to break TODO reverse possible?
+							//For forward transitions we need to find matching transitions to break
 							boolean foundmatching=false;
 							if(((SimpleTransition)leftTransition).getActionperformed().getKey()==0){
 								for(Action leftaction : ((Prefix)((SimpleTransition)leftTransition).getSubprocesstransitioning()).getPastactions()){
