@@ -21,6 +21,11 @@
     <javac srcdir="${src}" destdir="${build}" optimize="off" debug="on" deprecation="off" nowarn="true">
       <classpath refid="project.class.path" />
     </javac>
+    <copy overwrite="yes" todir="${build}">
+       <fileset dir="${src}">
+          <include name="*.properties" />
+       </fileset>
+    </copy>
   </target>
 
   <target name="clean">
