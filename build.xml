@@ -1,0 +1,48 @@
+<project name="nmrshiftdb" default="compile" basedir=".">
+  <property name="build" value="build" />
+  <property name="src" value="src" />
+  <property name="dist" value="dist" />
+	<property name="lib" value="lib" />
+	<property name="bin" value="bin" />
+	
+  <path id="project.class.path">
+    <pathelement location="${build}" />
+    <fileset dir="${lib}">
+            <include name="*.jar" />
+    </fileset>
+  </path>
+  
+  <target name="init">
+    <mkdir dir="${build}" />
+    <mkdir dir="${dist}" />
+  </target>
+
+  <target name="compile" depends="init">
+    <javac srcdir="${src}" destdir="${build}" optimize="off" debug="on" deprecation="off" nowarn="true">
+      <classpath refid="project.class.path" />
+    </javac>
+  </target>
+
+  <target name="clean">
+    <delete>
+      <fileset dir="." includes="**/*~" defaultexcludes="no" />
+    </delete>
+   <delete dir="${build}" />
+   <delete dir="${dist}" />
+  </target>
+
+	<target name="runcl" depends="compile">
+		<java classname="org.openscience.ccb.ui.CCBcommandline">
+			<classpath refid="project.class.path">
+			</classpath>
+		</java>
+	</target>
+
+	<target name="rungui" depends="compile">
+		<java classname="org.openscience.ccb.ui.CCBgui">
+			<classpath refid="project.class.path">
+			</classpath>
+		</java>
+	</target>
+</project>
+
