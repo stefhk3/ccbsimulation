@@ -92,7 +92,6 @@ public class Parallel extends Process {
 									dist==null || (dist.result(leftTransition.getSubprocesstransitioning(), rightTransition.getSubprocesstransitioning(), rootProcess))))
 							{
 						
-						//TODO this requires lookahead, maybe unified later
 						if(((SimpleTransition)leftTransition).getActionperformed() instanceof PastSemicolonAction && ((SimpleTransition)rightTransition).getActionperformed() instanceof PastSemicolonAction){
 							//For forward transitions we need to find matching transitions to break
 							boolean foundmatching=false;
@@ -107,7 +106,6 @@ public class Parallel extends Process {
 							if(!foundmatching)
 								break;
 						}
-						//TODO is this strong action?
 						Action commAction=null;
 						if(((SimpleTransition)rightTransition).getKeybroken()!=0)
 							commAction = new StrongAction(synchronize.isSychronized(((SimpleTransition)leftTransition).getActionperformed().getActionName(),((SimpleTransition)rightTransition).getActionperformed().getActionName()),((SimpleTransition)rightTransition).getKeybroken());
@@ -123,16 +121,13 @@ public class Parallel extends Process {
 				}
 			}
 		}
-		//TODO this is only true with restriction
 		for(Transition leftTransition : leftTransitions){
 			if(!resultingTransitions.contains(leftTransition)){
-				//TODO needed? leftTransition.setSubprocesstransitioning(left);
 				resultingTransitions.add(leftTransition);
 			}
 		}
 		for(Transition rightTransition : rightTransitions){
 			if(!resultingTransitions.contains(rightTransition)){
-				//TODO needed? rightTransition.setSubprocesstransitioning(right);
 				resultingTransitions.add(rightTransition);
 			}
 		}

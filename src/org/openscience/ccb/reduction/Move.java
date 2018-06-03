@@ -9,7 +9,7 @@ import org.openscience.ccb.process.Process;
 public class Move implements CCBVisitor {
 	
 	public void visit(Process process){
-		if(process instanceof Prefix && ((Prefix) process).getWeakAction()==null){//TODO is this condition true?
+		if(process instanceof Prefix && ((Prefix) process).getWeakAction()==null){
 			Prefix prefix=(Prefix)process;
 			Action weakAction=null;
 			for(Action action : prefix.getPastactions()){
