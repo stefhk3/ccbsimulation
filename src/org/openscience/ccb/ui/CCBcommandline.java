@@ -56,16 +56,16 @@ public class CCBcommandline {
 		CCBVisitor move = new Move();
 		CCBVisitor prom = new Prom();
 	    //To save memory and speed up lookup we remember done processes as strings
-	    List<String> doneProcesses=new ArrayList<String>();
+	    List<Process> doneProcesses=new ArrayList<Process>();
 	    int newkey=100;
 	    while(!newProcesses.isEmpty()){
 	    	List<Transition> transitions=new ArrayList<Transition>();
+		    List<Process> checkedProcesses=new ArrayList<Process>();
 	    	int newProcessCount=0;
 	    	for(Process newprocess : newProcesses.keySet()){
 	    	    if(newProcesses.get(newprocess)==null){
     	    	    List<Transition> localTransitions = newprocess.inferTransitions(synchronize, ccbconfiguration, newprocess);
     	    	    List<Transition> newTransitions = new ArrayList<Transition>();
-    	    	    List<Process> checkedProcesses=new ArrayList<Process>();
                     for(int i=0;i<localTransitions.size();i++){
                         Process clone=newprocess.clone();
                         Transition transition = clone.inferTransitions(synchronize, ccbconfiguration, clone).get(i);
@@ -73,6 +73,10 @@ public class CCBcommandline {
                         boolean existing=false;
                         Process clonedProcess=clone.clone();
                         clonedProcess.executeTransition(clonedProcess.inferTransitions(synchronize, ccbconfiguration, clonedProcess).get(i), newkey, clonedProcess);
+                        if(ccbconfiguration.forceMove)
+                            clonedProcess.accept(move);
+                        if(ccbconfiguration.forcePromotion)
+                            clonedProcess.accept(prom);
                         GraphChecks gc=new GraphChecks(clonedProcess);
                         for(int k=0;k<checkedProcesses.size();k++){
                             if(gc.isIsomorph(checkedProcesses.get(k)))
@@ -130,13 +134,23 @@ public class CCBcommandline {
                                 clonedProcess.accept(move);
                             if(ccbconfiguration.forcePromotion)
                                 clonedProcess.accept(prom);
-                            if(!doneProcesses.contains(clonedProcess.toString())){
+                            GraphChecks gc=new GraphChecks(clonedProcess);
+                            boolean alreadydone=false;
+                            for(Process p : doneProcesses){
+                            	if(gc.isIsomorph(p))
+                            		alreadydone=true;
+                            }
+                            for(Process p : newNewProcesses.keySet()){
+                            	if(gc.isIsomorph(p))
+                            		alreadydone=true;
+                            }
+                            if(!alreadydone){
                                 newNewProcesses.put(clonedProcess, null);
                             }
                         }
                         newProcessCount++;
                     }
-                    doneProcesses.add(newprocess.toString());
+                    doneProcesses.add(newprocess);
                 }
                 newProcesses=newNewProcesses;
             }
