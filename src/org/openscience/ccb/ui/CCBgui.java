@@ -316,6 +316,7 @@ public class CCBgui extends Application {
 					newProcesses.clear();
 					ObservableList<Process> previousitemsnew=FXCollections.observableArrayList();
 					List<Transition> transitions=new ArrayList<Transition>();
+					List<Process> checkedProcesses=new ArrayList<Process>();
 					for(Process process : processes){
 						Process origin=process;
 						Process target=process.clone();
@@ -328,7 +329,7 @@ public class CCBgui extends Application {
 		                    if(ccbconfiguration.forcePromotion)
 		                    	target.accept(prom);
 						}
-						handleProcess(target, previousitemsnew, transitions, origin);
+						handleProcess(target, previousitemsnew, transitions, origin, checkedProcesses);
 					}
 					draw(doneProcesses, detailscanvas, true);
 					items.clear();
@@ -379,9 +380,10 @@ public class CCBgui extends Application {
 			    synchronize = new Synchronize(gamma);
 				List<Transition> transitions=new ArrayList<Transition>();
 				previousitems.clear();
+				List<Process> checkedProcesses=new ArrayList<Process>();
 				for(int i=0;i<ccb.getFirstChildElement("processes").getChildCount();i++){
 					Process process=CCBParser.parseProcess(ccb.getFirstChildElement("processes").getChildElements().get(i), gamma, weakActionsList);
-					handleProcess(process, previousitems, transitions,null);
+					handleProcess(process, previousitems, transitions,null,checkedProcesses);
 		    	}
 				draw(doneProcesses, detailscanvas, true);
 				items.clear();
@@ -395,11 +397,10 @@ public class CCBgui extends Application {
 	}
 
 	
-	private void handleProcess(Process process, ObservableList<Process> previousitems, List<Transition> transitions, Process origin) throws CCBException {
+	private void handleProcess(Process process, ObservableList<Process> previousitems, List<Transition> transitions, Process origin, List<Process> checkedProcesses) throws CCBException {
 		previousitems.add(process);
 	    List<Transition> localTransitions = process.inferTransitions(synchronize, ccbconfiguration, process);
 	    List<Transition> newTransitions = new ArrayList<Transition>();
-	    List<Process> checkedProcesses=new ArrayList<Process>();
 	    transitionsmap=new HashMap<Integer, Integer>();
         doneProcesses.addVertex(process);
         for(int k=0;k<localTransitions.size();k++){
@@ -491,6 +492,7 @@ public class CCBgui extends Application {
 				newProcesses.clear();
 				List<Transition> transitions=new ArrayList<Transition>();
                 previousitems.clear();
+        	    List<Process> checkedProcesses=new ArrayList<Process>();
 				for(Transition process : processes){
 					Process origin=process.getClone().clone();
 					process.getClone().executeTransition(process, newkey++, process.getClone());
@@ -505,7 +507,7 @@ public class CCBgui extends Application {
                     		oldprocess=p;
                     }
                     if(oldprocess==null){
-                    	handleProcess(process.getClone(), previousitems, transitions,origin);
+                    	handleProcess(process.getClone(), previousitems, transitions,origin, checkedProcesses);
                     }
 				}
             	draw(doneProcesses, detailscanvas, true);
@@ -611,7 +613,8 @@ public class CCBgui extends Application {
 					List<Transition> transitions=new ArrayList<Transition>();
 					previousitems.clear();
 					items.clear();
-					handleProcess(process, previousitems, transitions,null);
+					List<Process> checkedProcesses=new ArrayList<Process>();
+					handleProcess(process, previousitems, transitions,null,checkedProcesses);
 					items.addAll(transitions);
 					newProcesses.clear();
 					newProcesses.put(process,transitions);
