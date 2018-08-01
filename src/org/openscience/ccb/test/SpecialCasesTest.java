@@ -2,14 +2,13 @@ package org.openscience.ccb.test;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-
 
 import org.openscience.ccb.action.Action;
 import org.openscience.ccb.action.WeakAction;
 import org.openscience.ccb.parser.CCBParser;
-import org.openscience.ccb.process.Parallel;
 import org.openscience.ccb.process.Prefix;
 import org.openscience.ccb.process.Process;
 import org.openscience.ccb.synchronisation.Synchronize;
@@ -51,7 +50,7 @@ public class SpecialCasesTest extends TestCase{
 		weakActions.add(new WeakAction("n"));
 		weakActions.add(new WeakAction("p"));	
 		Process p1=new CCBParser().parseProcess(input,weakActions,null,null);
-		Assert.assertEquals("((c1[1],c2[2],_c3[3],c4[10];p).0 | (h1[1];p).0 | (h2[2];p).0 | (n,o2,_o1[3]).0 | (h3[11];p).0 | (h4[6];p).0 | (n,o4[6],o3[10]).0 | (h5[7];p).0 | (h6[8];p).0 | (o5[7],o6[8],n[11]).0) \\ {c1,c2,c3,c4,h1,h2,h3,h4,h5,h6,o1,o2,o3,o4,o5,o6,n,p,c1h1,c2h2}",  p1.toString());
+		Assert.assertEquals("((_c3[3],c1[1],c2[2],c4[10];p).0 | (h1[1];p).0 | (h2[2];p).0 | (n,o2,_o1[3]).0 | (h3[11];p).0 | (h4[6];p).0 | (n,o3[10],o4[6]).0 | (h5[7];p).0 | (h6[8];p).0 | (n[11],o5[7],o6[8]).0) \\ {c1,c2,c3,c4,h1,h2,h3,h4,h5,h6,o1,o2,o3,o4,o5,o6,n,p,c1h1,c2h2}",  p1.toString());
 		List<Transition> transitions=p1.inferTransitions(synchronize, ccbconfiguration, p1);
 		Assert.assertEquals(12, transitions.size());
 		for(int i=0;i<12;i++)
@@ -64,9 +63,10 @@ public class SpecialCasesTest extends TestCase{
 		List<Action> weakActions = new ArrayList<Action>();
 		weakActions.add(new WeakAction("n"));
 		Process process=new CCBParser().parseProcess(input, weakActions,null,null);
-		Assert.assertEquals(input, process.toString());
+		Assert.assertEquals("(n,o1,o2).0",process.toString());
 		Assert.assertEquals(3,((Prefix)process).getFreshactions().size());
-		Assert.assertTrue(((Prefix)process).getFreshactions().get(2) instanceof WeakAction);
+		Iterator<Action> it=((Prefix)process).getFreshactions().iterator();
+		Assert.assertTrue(it.next() instanceof WeakAction);
 	}
 	
 	public void testExecutionEmpty() throws CCBException{

@@ -9,10 +9,10 @@ public class Prom implements CCBVisitor {
 		if(process instanceof Prefix){
 			Prefix prefix=(Prefix)process;
 			if(prefix.getWeakAction()!=null && prefix.getWeakAction().getKey()>0 && prefix.getFreshactions().size()>0){
-				prefix.getFreshactions().get(0).setKey(prefix.getWeakAction().getKey());
+				prefix.getFreshactions().iterator().next().setKey(prefix.getWeakAction().getKey());
 				prefix.getWeakAction().setKey(0);
-				prefix.getPastactions().add(prefix.getFreshactions().get(0));
-				prefix.getFreshactions().remove(0);
+				prefix.getPastactions().add(prefix.getFreshactions().iterator().next());
+				prefix.getFreshactions().remove(prefix.getFreshactions().iterator().next());
 			}
 		}
 	}

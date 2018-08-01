@@ -1,11 +1,11 @@
 package org.openscience.ccb.process;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.openscience.ccb.action.Action;
 import org.openscience.ccb.action.StrongAction;
@@ -148,35 +148,57 @@ public class Prefix extends Process {
 
 	@Override
 	public String toString(Action actionperformed1, Action actionperformed2, Action triggeredAction) {
+		return toString(actionperformed1, actionperformed2, triggeredAction, false);
+	}
+	
+	public String toStringAllInOne(){
+		return toString(null, null, null, true);
+	}
+
+	public String toString(Action actionperformed1, Action actionperformed2, Action triggeredAction, boolean allActionsInOne) {
 		StringBuffer prefix=new StringBuffer();
 		boolean first=true;
-		for(Action action : freshactions){
-			if(!first){
-				prefix.append(",");
-			}else{
-				first=false;
+		if(allActionsInOne){
+			Set<Action> allactions=new TreeSet<Action>(new SimpleActionComparator());
+			allactions.addAll(freshactions);
+			allactions.addAll(pastactions);
+			for(Action action : allactions){
+				if(!first){
+					prefix.append(",");
+				}else{
+					first=false;
+				}
+				prefix.append(action.getActionName());
 			}
-			if(action==actionperformed1 || action==actionperformed2){
-				prefix.append("_");
+		}else{
+			for(Action action : freshactions){
+				if(!first){
+					prefix.append(",");
+				}else{
+					first=false;
+				}
+				if(action==actionperformed1 || action==actionperformed2){
+					prefix.append("_");
+				}
+				if(action==triggeredAction){
+					prefix.append("#");
+				}
+				prefix.append(action.toString());
 			}
-			if(action==triggeredAction){
-				prefix.append("#");
+			for(Action action : pastactions){
+				if(!first){
+					prefix.append(",");
+				}else{
+					first=false;
+				}
+				if(action==actionperformed1 || action==actionperformed2){
+					prefix.append("_");
+				}
+				if(action==triggeredAction){
+					prefix.append("#");
+				}
+				prefix.append(action.toString());
 			}
-			prefix.append(action.toString());
-		}
-		for(Action action : pastactions){
-			if(!first){
-				prefix.append(",");
-			}else{
-				first=false;
-			}
-			if(action==actionperformed1 || action==actionperformed2){
-				prefix.append("_");
-			}
-			if(action==triggeredAction){
-				prefix.append("#");
-			}
-			prefix.append(action.toString());
 		}
 		if(weakAction!=null){
 			prefix.append(";");

@@ -86,6 +86,6 @@ public class ReductionsTest extends TestCase{
 		Assert.assertEquals("((a,b[1]).0 | (a).0 | (b[1]).0) \\ {a,b}",  p1.toString());
 		CCBVisitor prom = new Move();
 		p1.accept(prom);
-		Assert.assertEquals("((b,a[1]).0 | (a).0 | (b[1]).0) \\ {a,b}",  p1.toString());
+		Assert.assertEquals("((a[1],b).0 | (a).0 | (b[1]).0) \\ {a,b}",  p1.toString());
 	}
 }

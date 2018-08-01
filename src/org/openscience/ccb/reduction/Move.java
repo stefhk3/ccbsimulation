@@ -13,19 +13,25 @@ public class Move implements CCBVisitor {
 			Prefix prefix=(Prefix)process;
 			Action weakAction=null;
 			for(Action action : prefix.getPastactions()){
-				if(action instanceof WeakAction)
+				if(action instanceof WeakAction){
 					weakAction=action;
+					break;
+				}
 			}
 			Action strongAction=null;
 			for(Action action : prefix.getFreshactions()){
-				if(action instanceof StrongAction)
+				if(action instanceof StrongAction){
 					strongAction=action;
+					break;
+				}
 			}			
 			if(strongAction!=null && weakAction!=null){
 				strongAction.setKey(weakAction.getKey());
 				weakAction.setKey(0);
 				prefix.getPastactions().add(strongAction);
+				prefix.getPastactions().remove(weakAction);
 				prefix.getFreshactions().remove(strongAction);
+				prefix.getFreshactions().add(weakAction);
 			}
 		}
 	}

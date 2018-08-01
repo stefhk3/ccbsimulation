@@ -1,6 +1,6 @@
 package org.openscience.ccb.action;
 
-public abstract class Action {
+public abstract class Action implements Comparable<Action>{
 	
 	private String actionName;
 	private int key;
@@ -47,6 +47,11 @@ public abstract class Action {
 	    }else{
 	        return false;
 	    }
+	}
+	
+	@Override
+	public int compareTo(Action other){
+		return this.getActionName().compareTo(other.getActionName());
 	}
 	
 	public abstract Action clone();

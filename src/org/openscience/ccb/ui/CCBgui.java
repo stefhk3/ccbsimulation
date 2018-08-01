@@ -28,6 +28,7 @@ import org.openscience.ccb.reduction.CCBVisitor;
 import org.openscience.ccb.reduction.Move;
 import org.openscience.ccb.reduction.Prom;
 import org.openscience.ccb.synchronisation.Synchronize;
+import org.openscience.ccb.transition.DummyTransition;
 import org.openscience.ccb.transition.Transition;
 import org.openscience.ccb.util.CCBConfiguration;
 import org.openscience.ccb.util.CCBException;
@@ -403,6 +404,7 @@ public class CCBgui extends Application {
 	    List<Transition> newTransitions = new ArrayList<Transition>();
 	    transitionsmap=new HashMap<Integer, Integer>();
         doneProcesses.addVertex(process);
+    	newTransitions.add(new DummyTransition("From "+process.counter));
         for(int k=0;k<localTransitions.size();k++){
             Process clone=process.clone();
             Transition transition = clone.inferTransitions(synchronize, ccbconfiguration, clone).get(k);
@@ -494,21 +496,23 @@ public class CCBgui extends Application {
                 previousitems.clear();
         	    List<Process> checkedProcesses=new ArrayList<Process>();
 				for(Transition process : processes){
-					Process origin=process.getClone().clone();
-					process.getClone().executeTransition(process, newkey++, process.getClone());
-                    if(ccbconfiguration.forceMove)
-                    	process.getClone().accept(move);
-                    if(ccbconfiguration.forcePromotion)
-                    	process.getClone().accept(prom);
-                    GraphChecks gc=new GraphChecks(process.getClone());
-                    Process oldprocess=null;
-                    for(Process p : doneProcesses.vertexSet()){
-                    	if(gc.isIsomorph(p))
-                    		oldprocess=p;
-                    }
-                    if(oldprocess==null){
-                    	handleProcess(process.getClone(), previousitems, transitions,origin, checkedProcesses);
-                    }
+					if(!(process instanceof DummyTransition)){
+						Process origin=process.getClone().clone();
+						process.getClone().executeTransition(process, newkey++, process.getClone());
+	                    if(ccbconfiguration.forceMove)
+	                    	process.getClone().accept(move);
+	                    if(ccbconfiguration.forcePromotion)
+	                    	process.getClone().accept(prom);
+	                    GraphChecks gc=new GraphChecks(process.getClone());
+	                    Process oldprocess=null;
+	                    for(Process p : doneProcesses.vertexSet()){
+	                    	if(gc.isIsomorph(p))
+	                    		oldprocess=p;
+	                    }
+	                    if(oldprocess==null){
+	                    	handleProcess(process.getClone(), previousitems, transitions,origin, checkedProcesses);
+	                    }
+					}
 				}
             	draw(doneProcesses, detailscanvas, true);
 				items.clear();

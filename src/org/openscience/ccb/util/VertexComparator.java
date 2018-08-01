@@ -2,15 +2,16 @@ package org.openscience.ccb.util;
 
 import java.util.Comparator;
 
+import org.openscience.ccb.process.Prefix;
 import org.openscience.ccb.process.Process;
 
 public class VertexComparator implements Comparator<Process> {
 
     @Override
     public int compare(Process o1, Process o2) {
-        String p1=o1.toString();
+        String p1=((Prefix)o1).toStringAllInOne();
         String simplep1=makeSimple(p1);
-        String p2=o2.toString();
+        String p2=((Prefix)o2).toStringAllInOne();
         String simplep2=makeSimple(p2);
         if(simplep1.equals(simplep2))
             return 0;

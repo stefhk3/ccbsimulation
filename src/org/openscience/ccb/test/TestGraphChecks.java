@@ -79,4 +79,20 @@ public class TestGraphChecks extends TestCase {
 	    GraphChecks gc=new GraphChecks(p1);
 	    Assert.assertTrue(gc.isIsomorph(p2));
     }
+
+    public void testExample3() throws CCBException{
+	    String input = "((c1[1],c2[2],c4[4],c3[100];p).0 | (h1[1];p).0 | (h2[2];p).0 | (n,o1[108],o2[4]).0) \\ {c1,c2,c3,c4,h1,h2,o1,o2,np,c1h1,c2h2} | ((h3[5];p).0 | (h4[6];p).0 | (o3[5],o4[6],n[100]).0) \\ {h3,h4,o3,o4,np} | ((h5[108];p).0 | (h6[8];p).0 | (n,o5,o6[8]).0) \\ {h5,h6,o5,o6,np} | ((h7[9];p).0 | (h8[10];p).0 | (o7[9],o8[10],n[105]).0) \\ {h7,h8,o7,o8,np}";
+	    String weakactions = "n,p";
+	    StringTokenizer st=new StringTokenizer(weakactions,",");
+	    List<Action> weakActionsList=new  ArrayList<Action>();
+	    while(st.hasMoreTokens()){
+	    	weakActionsList.add(new WeakAction(st.nextToken()));
+	    }
+	    CCBParser ccbparser=new CCBParser();
+	    Process p1=ccbparser.parseProcess(input, weakActionsList,  null, null);
+	    input = "((c1[1],c2[2],c4[4],c3[100];p).0 | (h1[1];p).0 | (h2[2];p).0 | (n,o1[108],o2[4]).0) \\ {c1,c2,c3,c4,h1,h2,o1,o2,np,c1h1,c2h2} | ((h3[5];p).0 | (h4[6];p).0 | (o3[5],o4[6],n[100]).0) \\ {h3,h4,o3,o4,np} | ((h5[105];p).0 | (h6[8];p).0 | (n,o5,o6[8]).0) \\ {h5,h6,o5,o6,np} | ((h7[108];p).0 | (h8[10];p).0 | (o7[9],o8[10],n[105]).0) \\ {h7,h8,o7,o8,np}";
+	    Process p2=ccbparser.parseProcess(input, weakActionsList,  null, null);
+	    GraphChecks gc=new GraphChecks(p1);
+	    Assert.assertTrue(gc.isIsomorph(p2));
+    }
 }
