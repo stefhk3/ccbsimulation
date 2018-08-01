@@ -427,7 +427,7 @@ public class CCBgui extends Application {
                 for(Process doneprocess : doneProcesses.vertexSet()){
                     if(gc.isIsomorph(doneprocess)){
                         existing=true;
-                		doneProcesses.addEdge(doneprocess,process);
+                		doneProcesses.addEdge(process,doneprocess);
                 		break;
                     }
                 }
@@ -439,8 +439,6 @@ public class CCBgui extends Application {
 	                transition.setClone(clone);
 	                newTransitions.add(transition);
 	                transitionsmap.put(newTransitions.size()-1, k);
-                }else{
-                	
                 }
             }
         }

@@ -55,7 +55,6 @@ public class CCBcommandline {
 	    newProcesses.put(ccbparser.parseProcess(input, weakActionsList, ccbconfiguration.connectivityMax>-1 ? new Connectivity(ccbconfiguration.connectivityMax) : null, ccbconfiguration.distanceMin>-1 ? new Distance(ccbconfiguration.distanceMax, ccbconfiguration.distanceMin, ccbconfiguration.distanceAnd) : null), null);
 		CCBVisitor move = new Move();
 		CCBVisitor prom = new Prom();
-	    //To save memory and speed up lookup we remember done processes as strings
 	    List<Process> doneProcesses=new ArrayList<Process>();
 	    int newkey=100;
 	    while(!newProcesses.isEmpty()){
