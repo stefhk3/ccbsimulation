@@ -46,6 +46,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -62,6 +63,8 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.Tooltip;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -95,6 +98,7 @@ public class CCBgui extends Application {
     //This holds the processes reached so far and the possible transitions
     AsUnweightedDirectedGraph<Process, DefaultEdge> doneProcesses=new AsUnweightedDirectedGraph<Process, DefaultEdge>(new DefaultDirectedWeightedGraph<Process, DefaultEdge>(DefaultEdge.class));
     int processcounter=0;
+    Map<Process,List<Double>> processesmap=new HashMap<Process, List<Double>>();
 
     @Override
     public void init(){
@@ -142,6 +146,41 @@ public class CCBgui extends Application {
 			}
 		});
 		CanvasPane detailsCanvasPane=new CanvasPane(500,500);
+		detailsCanvasPane.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+			  @Override
+	          public void handle(MouseEvent me) {
+	        	  for(Process p : processesmap.keySet()){
+	        		  double x=me.getX();
+	        		  double y=me.getY();
+	        		  if(processesmap.get(p).get(0)>x-15 && processesmap.get(p).get(0)<x+15 && processesmap.get(p).get(1)>y-15 && processesmap.get(p).get(1)<y+15){
+	        			  try{
+		        			  GraphChecks gc=new GraphChecks(p);
+		        			  draw(gc.getGraph(), canvas, false);
+		        			  break;
+	        			  }catch(CCBException ex){
+	        				  //TODO
+	        			  }
+	        		  }
+	        	  }
+	          }
+	        });
+		Tooltip mousePositionToolTip = new Tooltip("");
+		detailsCanvasPane.setOnMouseMoved(new EventHandler<MouseEvent>() {
+		        @Override
+		        public void handle(MouseEvent me) {
+		        	mousePositionToolTip.hide();
+		        	  for(Process p : processesmap.keySet()){
+		        		  double x=me.getX();
+		        		  double y=me.getY();
+		        		  if(processesmap.get(p).get(0)>x-15 && processesmap.get(p).get(0)<x+15 && processesmap.get(p).get(1)>y-15 && processesmap.get(p).get(1)<y+15){
+		      		            mousePositionToolTip.setText(p.toString());
+		    		            Node node = (Node) me.getSource();
+		    		            mousePositionToolTip.show(node, me.getScreenX() + 50, me.getScreenY());
+		    		            break;
+		        		  }
+		        	  }
+		        }
+		    });
 		detailscanvas=detailsCanvasPane.getCanvas();
 		HBox hbox=new HBox();
 		hbox.setSpacing(10);
@@ -697,6 +736,7 @@ public class CCBgui extends Application {
 			double targety=(jgxAdapter.getModel().getGeometry(jgxAdapter.getVertexToCellMap().get(target)).getY()-smallesty)*scaley+shifty+20 ;
 			drawArrow(canvas.getGraphicsContext2D(), sourcex, sourcey, targetx, targety, withhead);
 		}
+		processesmap.clear();
 		for (mxICell cell : jgxAdapter.getVertexToCellMap().values()) {
 			x=(jgxAdapter.getModel().getGeometry(cell).getX()-smallestx)*scalex+shiftx+20-10;
 			y=(jgxAdapter.getModel().getGeometry(cell).getY()-smallesty)*scaley+shifty+20+5;
@@ -705,6 +745,10 @@ public class CCBgui extends Application {
 			if(!withhead)
 				text=jgxAdapter.getCellToVertexMap().get(cell).toString();
 			canvas.getGraphicsContext2D().fillText(text, x, y);
+			List<Double> coords=new ArrayList<Double>();
+			coords.add(x);
+			coords.add(y);
+			processesmap.put(jgxAdapter.getCellToVertexMap().get(cell),coords);
 		}
 	}
 	
