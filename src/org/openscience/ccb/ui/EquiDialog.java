@@ -21,14 +21,14 @@ public class EquiDialog extends Dialog<Pair<String, String>>{
 		this.setHeaderText("Enter two processes");
 	
 		TextField p1 = new TextField();
-		p1.setPrefWidth(200);
+		p1.setPrefWidth(600);
 		TextField p2 = new TextField();
-		p2.setPrefWidth(200);
+		p2.setPrefWidth(600);
 		
 		FlowPane flow = new FlowPane(Orientation.VERTICAL);
 		flow.setColumnHalignment(HPos.LEFT); // align labels on left
-	    flow.setPrefWrapLength(100); // preferred height = 200
 	    flow.setPrefHeight(100);
+	    flow.setPrefWidth(600);
 	    flow.getChildren().add(p1);
 	    flow.getChildren().add(p2);
 		this.getDialogPane().setContent(flow);

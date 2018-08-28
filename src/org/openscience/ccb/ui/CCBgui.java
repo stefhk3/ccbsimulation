@@ -730,7 +730,7 @@ public class CCBgui extends Application {
 				    		}
 				    	}
 			    		Alert alert = new Alert(AlertType.INFORMATION);
-			    		alert.setTitle("Eauivalence exists");
+			    		alert.setTitle("Equivalence exists");
 			    		alert.setHeaderText("Your first process can be transformed into the second by applying these operations:");
 			    		alert.setContentText(transforms.toString());
 			    		alert.showAndWait();
