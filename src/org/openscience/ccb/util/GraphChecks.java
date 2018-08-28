@@ -9,6 +9,7 @@ import org.jgrapht.UndirectedGraph;
 import org.jgrapht.alg.ConnectivityInspector;
 import org.jgrapht.alg.DijkstraShortestPath;
 import org.jgrapht.alg.isomorphism.VF2GraphIsomorphismInspector;
+import org.jgrapht.alg.isomorphism.VF2GraphMappingIterator;
 import org.jgrapht.graph.AbstractBaseGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -102,6 +103,12 @@ public class GraphChecks {
         return iso.isomorphismExists();
     }
     
+    public VF2GraphMappingIterator<Process, DefaultEdge> getMapping(Process p2) throws CCBException{
+    	AbstractBaseGraph<Process, DefaultEdge> g2=createGraph(p2);
+        VF2GraphIsomorphismInspector<Process, DefaultEdge> iso=new VF2GraphIsomorphismInspector<Process, DefaultEdge>(graph, g2, new VertexComparator(), new EdgeComparator(graph, g2));
+        return iso.getMappings();
+    }
+
     public double distance(Process p1, Process p2){
     	return new DijkstraShortestPath<Process, DefaultEdge>(graph,p1, p2).getPathLength();
     }

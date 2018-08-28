@@ -141,6 +141,13 @@ public class Prefix extends Process {
 		return actionsReady;
 	}
 	
+	public Set<Action> getAllActionsInOne(){
+		Set<Action> allactions=new TreeSet<Action>(new SimpleActionComparator());
+		allactions.addAll(freshactions);
+		allactions.addAll(pastactions);
+		return allactions;
+	}
+	
 	@Override
 	public String toString(){
 		return toString(null, null, null);
@@ -159,9 +166,7 @@ public class Prefix extends Process {
 		StringBuffer prefix=new StringBuffer();
 		boolean first=true;
 		if(allActionsInOne){
-			Set<Action> allactions=new TreeSet<Action>(new SimpleActionComparator());
-			allactions.addAll(freshactions);
-			allactions.addAll(pastactions);
+			Set<Action> allactions=getAllActionsInOne();
 			for(Action action : allactions){
 				if(!first){
 					prefix.append(",");

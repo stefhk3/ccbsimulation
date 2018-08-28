@@ -1,5 +1,8 @@
 package org.openscience.ccb.action;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public abstract class Action implements Comparable<Action>{
 	
 	private String actionName;
@@ -55,4 +58,36 @@ public abstract class Action implements Comparable<Action>{
 	}
 	
 	public abstract Action clone();
+	
+	public String getName(){
+		String patternRestriction="[A-Za-z]*[0-9]*";
+		Pattern word = Pattern.compile(patternRestriction);
+		Matcher match = word.matcher(actionName);
+		if(match.matches()){
+			patternRestriction="(.*?)(\\d+)";
+			word = Pattern.compile(patternRestriction);
+			match = word.matcher(actionName);
+			if(match.find())
+				return match.group(1);
+		}
+		return null;
+	}
+	
+	public int getSubscript(){
+		String patternRestriction="[A-Za-z]*[0-9]*";
+		Pattern word = Pattern.compile(patternRestriction);
+		Matcher match = word.matcher(actionName);
+		if(match.matches()){
+			patternRestriction="(.*?)(\\d+)";
+			word = Pattern.compile(patternRestriction);
+			match = word.matcher(actionName);
+			if(match.find())
+				return Integer.parseInt(match.group(2));
+		}
+		return 0;
+	}
+	
+	public void setSubscript(int newsubscript){
+		actionName=getName()+newsubscript;
+	}
 }

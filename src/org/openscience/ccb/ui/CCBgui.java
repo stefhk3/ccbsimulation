@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -14,6 +15,8 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.jgrapht.Graph;
+import org.jgrapht.alg.isomorphism.IsomorphicGraphMapping;
+import org.jgrapht.alg.isomorphism.VF2GraphMappingIterator;
 import org.jgrapht.ext.JGraphXAdapter;
 import org.jgrapht.graph.AsUnweightedDirectedGraph;
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
@@ -23,6 +26,7 @@ import org.openscience.ccb.action.WeakAction;
 import org.openscience.ccb.parser.CCBParser;
 import org.openscience.ccb.predicate.Connectivity;
 import org.openscience.ccb.predicate.Distance;
+import org.openscience.ccb.process.Prefix;
 import org.openscience.ccb.process.Process;
 import org.openscience.ccb.reduction.CCBVisitor;
 import org.openscience.ccb.reduction.Move;
@@ -74,6 +78,7 @@ import javafx.scene.transform.Affine;
 import javafx.scene.transform.Transform;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import junit.framework.Assert;
 import nu.xom.Builder;
 import nu.xom.Document;
 import nu.xom.Element;
@@ -220,6 +225,11 @@ public class CCBgui extends Application {
 		    }
 		});
 		fileMenu.getItems().add(exit);
+		Menu toolsMenu=new Menu("Tools");
+		menuBar.getMenus().add(toolsMenu);
+		MenuItem equiItem=new MenuItem("Check chemical process equivalence");
+		equiItem.setOnAction(new EquiAction());
+		toolsMenu.getItems().add(equiItem);
 		Menu editMenu=new Menu("Edit");
 		menuBar.getMenus().add(editMenu);
 		MenuItem prefItem=new MenuItem("Preferences...");
@@ -681,6 +691,61 @@ public class CCBgui extends Application {
 				ccbconfiguration=prefdialog.getResult();
 		}
 	}
+	
+	private class EquiAction implements EventHandler<ActionEvent> {
+
+		@Override
+		public void handle(ActionEvent event) {
+			EquiDialog equidialog=new EquiDialog(null);
+			if(equidialog.getResult()!=null){
+				try{
+					CCBParser ccbparser=new CCBParser();
+					Process p1=ccbparser.parseProcess(equidialog.getResult().getKey(), ccbconfiguration.connectivityMax>-1 ? new Connectivity(ccbconfiguration.connectivityMax) : null, ccbconfiguration.distanceMin>-1 ? new Distance(ccbconfiguration.distanceMax, ccbconfiguration.distanceMin, ccbconfiguration.distanceAnd) : null);
+					Process p2=ccbparser.parseProcess(equidialog.getResult().getValue(), ccbconfiguration.connectivityMax>-1 ? new Connectivity(ccbconfiguration.connectivityMax) : null, ccbconfiguration.distanceMin>-1 ? new Distance(ccbconfiguration.distanceMax, ccbconfiguration.distanceMin, ccbconfiguration.distanceAnd) : null);
+				    GraphChecks gc=new GraphChecks(p1);
+				    if(!gc.isIsomorph(p2)){
+						Alert alert=new Alert(AlertType.WARNING);
+						alert.setTitle("Not equivalent");
+						alert.setHeaderText(null);
+						alert.setContentText("Processes are not chemically process equivalent!");
+						alert.showAndWait();				    	
+				    }else{
+				    	IsomorphicGraphMapping<Process, DefaultEdge> mapping =  gc.getMapping(p2).next();
+		    			StringBuffer transforms=new StringBuffer();
+				    	for(Process pinp1 : gc.getGraph().vertexSet()){
+				    		Process pinp2=mapping.getVertexCorrespondence(pinp1, true);
+				    		if(pinp1 instanceof Prefix && pinp2 instanceof Prefix){
+				    			Set<Action> actionsinp1=((Prefix)pinp1).getAllActionsInOne();
+				    			Set<Action> actionsinp2=((Prefix)pinp2).getAllActionsInOne();
+				    			Iterator<Action> actionsinp2iterator = actionsinp2.iterator();
+				    			for(Action actionin1 : actionsinp1){
+				    				Action actionin2=actionsinp2iterator.next();
+				    				if(actionin1.getKey()!=actionin2.getKey()){
+				    					transforms.append("key "+actionin2.getKey()+" becomes "+actionin1.getKey()+"\r\n");
+				    				}
+				    				if(actionin1.getSubscript()!=0 && actionin1.getSubscript()!=actionin2.getSubscript()){
+				    					transforms.append("subscript "+actionin2.getSubscript()+" becomes "+actionin1.getSubscript()+"\r\n");
+				    				}
+				    			}
+				    		}
+				    	}
+			    		Alert alert = new Alert(AlertType.INFORMATION);
+			    		alert.setTitle("Eauivalence exists");
+			    		alert.setHeaderText("Your first process can be transformed into the second by applying these operations:");
+			    		alert.setContentText(transforms.toString());
+			    		alert.showAndWait();
+				    }
+				}catch(Exception ex){
+					Alert alert=new Alert(AlertType.ERROR);
+					alert.setTitle("Error");
+					alert.setHeaderText(null);
+					alert.setContentText(ex.getMessage());
+					alert.showAndWait();
+				}
+			}
+		}
+	}
+
 	
 	private void draw(Graph<Process, DefaultEdge> g, Canvas canvas, boolean withhead){
 		canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
