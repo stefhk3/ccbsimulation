@@ -68,6 +68,9 @@ import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.Tooltip;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -206,33 +209,53 @@ public class CCBgui extends Application {
 		splitPane.getItems().addAll(vbox, canvasPane);
 		BorderPane rootBox=new BorderPane();
 		MenuBar menuBar = new MenuBar();
-		Menu fileMenu=new Menu("File");
+		Menu fileMenu=new Menu();
+		fileMenu.setMnemonicParsing(true);
+		fileMenu.setText("_File");
 		menuBar.getMenus().add(fileMenu);
-		MenuItem newItem=new MenuItem("New...");
+		MenuItem newItem=new MenuItem();
+		newItem.setMnemonicParsing(true);
+		newItem.setText("_New...");
 		newItem.setOnAction(new NewAction());
+		newItem.setAccelerator(new KeyCodeCombination(KeyCode.T, KeyCombination.CONTROL_DOWN));
 		fileMenu.getItems().add(newItem);
-		MenuItem loadItem=new MenuItem("Open...");
+		MenuItem loadItem=new MenuItem();
+		loadItem.setMnemonicParsing(true);
+		loadItem.setText("_Open...");
 		loadItem.setOnAction(new LoadAction());
+		loadItem.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN));
 		fileMenu.getItems().add(loadItem);
-		MenuItem saveItem=new MenuItem("Save as...");
+		MenuItem saveItem=new MenuItem();
+		saveItem.setMnemonicParsing(true);
+		saveItem.setText("_Save as...");
 		saveItem.setOnAction(new SaveAction());
+		saveItem.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
 		fileMenu.getItems().add(saveItem);
 		fileMenu.getItems().add(new SeparatorMenuItem());
-		MenuItem exit = new MenuItem("Exit");
+		MenuItem exit = new MenuItem("_Quit");
+		exit.setAccelerator(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN));
 		exit.setOnAction(new EventHandler<ActionEvent>() {
 		    public void handle(ActionEvent t) {
 		        System.exit(0);
 		    }
 		});
 		fileMenu.getItems().add(exit);
-		Menu toolsMenu=new Menu("Tools");
+		Menu toolsMenu=new Menu();
+		toolsMenu.setMnemonicParsing(true);
+		toolsMenu.setText("_Tools");
 		menuBar.getMenus().add(toolsMenu);
-		MenuItem equiItem=new MenuItem("Check chemical process equivalence");
+		MenuItem equiItem=new MenuItem();
+		equiItem.setMnemonicParsing(true);
+		equiItem.setText("_Check chemical process equivalence");
 		equiItem.setOnAction(new EquiAction());
 		toolsMenu.getItems().add(equiItem);
-		Menu editMenu=new Menu("Edit");
+		Menu editMenu=new Menu();
+		editMenu.setMnemonicParsing(true);
+		editMenu.setText("_Edit");
 		menuBar.getMenus().add(editMenu);
-		MenuItem prefItem=new MenuItem("Preferences...");
+		MenuItem prefItem=new MenuItem();
+		prefItem.setMnemonicParsing(true);
+		prefItem.setText("_Preferences...");
 		prefItem.setOnAction(new SettingsAction());
 		editMenu.getItems().add(prefItem);
 		rootBox.setTop(menuBar);
@@ -404,6 +427,8 @@ public class CCBgui extends Application {
 		public void handle(ActionEvent event) {
 			try{
 				File file=fileChooser.showOpenDialog(stage);
+				if(file==null)
+					return;
 				Builder parser=new Builder();
 				Document doc=parser.build(file);
 				Element ccb=doc.getRootElement();
