@@ -1,6 +1,7 @@
 package org.openscience.ccb.ui;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -16,7 +17,6 @@ import java.util.StringTokenizer;
 
 import org.jgrapht.Graph;
 import org.jgrapht.alg.isomorphism.IsomorphicGraphMapping;
-import org.jgrapht.alg.isomorphism.VF2GraphMappingIterator;
 import org.jgrapht.ext.JGraphXAdapter;
 import org.jgrapht.graph.AsUnweightedDirectedGraph;
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
@@ -81,7 +81,6 @@ import javafx.scene.transform.Affine;
 import javafx.scene.transform.Transform;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import junit.framework.Assert;
 import nu.xom.Builder;
 import nu.xom.Document;
 import nu.xom.Element;
@@ -153,7 +152,7 @@ public class CCBgui extends Application {
 				previous.getSelectionModel().clearSelection();
 			}
 		});
-		CanvasPane detailsCanvasPane=new CanvasPane(500,500);
+		CanvasPane detailsCanvasPane=new CanvasPane(700,500);
 		detailsCanvasPane.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
 			  @Override
 	          public void handle(MouseEvent me) {
@@ -166,7 +165,7 @@ public class CCBgui extends Application {
 		        			  draw(gc.getGraph(), canvas, false);
 		        			  break;
 	        			  }catch(CCBException ex){
-	        				  //TODO
+	        					handleException(ex);
 	        			  }
 	        		  }
 	        	  }
@@ -260,7 +259,7 @@ public class CCBgui extends Application {
 		editMenu.getItems().add(prefItem);
 		rootBox.setTop(menuBar);
 		rootBox.setCenter(splitPane);
-		Scene scene=new Scene(rootBox,1000,800);
+		Scene scene=new Scene(rootBox,1200,800);
 		rootBox.prefHeightProperty().bind(scene.heightProperty());
 		rootBox.prefWidthProperty().bind(scene.widthProperty());
 		primaryStage.setScene(scene);
@@ -286,7 +285,8 @@ public class CCBgui extends Application {
 	private void doSave() {
 		PrintWriter out=null;
 		try{
-			File file=fileChooser.showSaveDialog(stage);
+			throw new IOException("lkkjö");
+			/*File file=fileChooser.showSaveDialog(stage);
 			if(file==null)
 				return;
 			out=new PrintWriter(file);
@@ -308,10 +308,9 @@ public class CCBgui extends Application {
 			}
 			root.appendChild(weakactions);
 			Document doc=new Document(root);
-			out.println(doc.toXML());
+			out.println(doc.toXML());*/
 		}catch(Exception ex){
-			ex.printStackTrace();
-			//TODO handle exceptions
+			handleException(ex);
 		}
 		finally{
 			if(out!=null)
@@ -328,8 +327,7 @@ public class CCBgui extends Application {
 		    	GraphChecks gc=new GraphChecks(newValue);
 		    	draw(gc.getGraph(), canvas, false);
 			}catch(Exception ex){
-				ex.printStackTrace();
-				//TODO handle exceptions
+				handleException(ex);
 			}
 	    }
 	}
@@ -355,8 +353,7 @@ public class CCBgui extends Application {
 		    	GraphChecks gc=new GraphChecks(clonedProcess);
 		    	draw(gc.getGraph(), canvas, false);
 			}catch(Exception ex){
-				ex.printStackTrace();
-				//TODO handle exceptions
+				handleException(ex);
 			}
 	    }
 	}
@@ -464,8 +461,7 @@ public class CCBgui extends Application {
 				items.clear();
 				items.addAll(transitions);
 			}catch(Exception ex){
-				ex.printStackTrace();
-				//TODO handle exceptions
+				handleException(ex);
 			}
 		}
 
@@ -530,6 +526,15 @@ public class CCBgui extends Application {
 	}
 
 	
+	public void handleException(Exception ex) {
+		Alert alert=new Alert(AlertType.ERROR,ex.getMessage());
+		alert.setTitle("Sorr, we're having problems");
+		alert.setHeaderText("An error occured");
+		ex.printStackTrace();
+		alert.showAndWait();				
+	}
+
+
 	private class RemoveAction implements EventHandler<ActionEvent> {
 
 		@Override
@@ -802,6 +807,10 @@ public class CCBgui extends Application {
 	    	if(jgxAdapter.getModel().getGeometry(cell).getY()>greatesty)
 	    		greatesty=jgxAdapter.getModel().getGeometry(cell).getY();
 	    }
+	    if(smallestx==greatestx)
+	    	greatestx=smallestx+100;
+	    if(smallesty==greatesty)
+	    	greatesty=smallesty+100;
 	    double sizex=canvas.getWidth()-40;//we keep 20 as margin
 	    if(canvas==this.canvas)
 	    	sizex=canvas.getWidth()-100;//more margin on molecule canvas
