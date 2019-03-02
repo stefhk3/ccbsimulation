@@ -135,7 +135,7 @@ public class Prefix extends Process {
 		}
 		if(actionsReady.size()>0)
 			return actionsReady;
-		if(weakAction!=null)
+		if(weakAction!=null && weakAction.getKey()==0)
 			actionsReady.add(weakAction);
 		actionsReady.addAll(process.getActionsReady());
 		return actionsReady;
@@ -234,7 +234,7 @@ public class Prefix extends Process {
     			resultingTransitions.add(transition);
     		}
 		}
-		if(freshactions.size()==0 && weakAction!=null){
+		if(freshactions.size()==0 && weakAction!=null && weakAction.getKey()==0){
 			if(!(process instanceof Prefix) || ((Prefix)process).getPastactions().size()==0)
 			for(Action action : pastactions){
 				SimpleTransition triggeredTransition=new SimpleTransition(this, action, true);
