@@ -6,7 +6,7 @@ import java.util.List;
 import org.openscience.ccb.action.Action;
 import org.openscience.ccb.action.WeakAction;
 import org.openscience.ccb.parser.CCBParser;
-import org.openscience.ccb.process.Prefix;
+import org.openscience.ccb.process.PrefixProcess;
 import org.openscience.ccb.process.Process;
 import org.openscience.ccb.util.CCBException;
 

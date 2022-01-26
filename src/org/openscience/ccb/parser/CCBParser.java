@@ -17,6 +17,7 @@ import org.openscience.ccb.predicate.Distance;
 import org.openscience.ccb.process.Nil;
 import org.openscience.ccb.process.Parallel;
 import org.openscience.ccb.process.Prefix;
+import org.openscience.ccb.process.PrefixProcess;
 import org.openscience.ccb.process.Process;
 import org.openscience.ccb.process.Restriction;
 import org.openscience.ccb.util.CCBException;
@@ -27,7 +28,7 @@ public class CCBParser {
 	
 	public static Process parseProcess(Element process, Map<Set<String>, String> gamma, List<Action> weakactions) throws CCBException{
 		if(process.getLocalName().equals("prefix")){
-			return new Prefix(process, gamma, weakactions);
+			return new PrefixProcess(process, gamma, weakactions);
 		}else if(process.getLocalName().equals("nil")){
 			return new Nil(process);
 		}else if(process.getLocalName().equals("parallel")){
@@ -41,7 +42,7 @@ public class CCBParser {
 	
 	public Process parseProcess(String input, List<Action> weakActionsList, Connectivity conn, Distance dist) throws CCBException{
 		//We look at the different operators, starting from the ouside
-		String patternRestriction="\\s\\\\\\s\\{[A-Za-z_0-9,]*\\}$";
+		String patternRestriction="\\s\\\\\\s\\{[A-Za-z_0-9, ]*\\}$";
 		Pattern word = Pattern.compile(patternRestriction);
 		Matcher match = word.matcher(input);
 		if(stringContainsPipeOnFirstLevel(input)>-1){
@@ -62,16 +63,33 @@ public class CCBParser {
 		    }
 		    return new Restriction(restrictions, subprocess);
 		}else if(input.startsWith("(")){
-		    //Outer operator is prefix
-			int end=input.indexOf(")");
-			PastSemicolonAction weakAction = null;
+			//we remove outer()
+			int end=findClosingParen(input.toCharArray(), 0);
 			Process process = parseProcess(input.substring(end+2), weakActionsList, conn, dist);
-			if(input.substring(1,end-1).indexOf(";")>-1){
+			Prefix prefix=parsePrefix(input.substring(1,end), weakActionsList);
+			return new PrefixProcess(prefix,process);
+		}else if(input.equals("0")){
+		    //Outer process is a nil process
+			return new Nil();
+		}else{
+			throw new CCBException(input+" doesn't look like a valid process description");
+		}
+	}
+
+	private Prefix parsePrefix(String input, List<Action> weakActionsList) {
+		if(input.contains("|")) {
+			return new Prefix(parsePrefix(input.substring(0,input.indexOf('|')).trim(), weakActionsList), parsePrefix(input.substring(input.indexOf('|')+2).trim(), weakActionsList));
+		}else {
+		    //Outer operator is prefix
+			int end=input.length();
+			PastSemicolonAction weakAction = null;
+			if(input.indexOf(";")>-1){
+				//end=input.indexOf(")");
 				weakAction=new PastSemicolonAction(input.substring(input.indexOf(";")+1,end));
 				end=input.substring(0,end-1).indexOf(";");
 			}
 			List<Action> actions=new ArrayList<Action>();
-			String actionstring=input.substring(1,end);
+			String actionstring=input.substring(0,end);
 			StringTokenizer st=new StringTokenizer(actionstring,",");
 			while(st.hasMoreTokens()){
 				Action action=null;
@@ -91,18 +109,13 @@ public class CCBParser {
 				actions.add(action);
 			}
 			if(weakAction!=null){
-				return new Prefix(actions, process, weakAction);
+				return new Prefix(actions, weakAction);
 			}else{
-				return new Prefix(actions, process);
+				return new Prefix(actions);
 			}
-		}else if(input.equals("0")){
-		    //Outer process is a nil process
-			return new Nil();
-		}else{
-			throw new CCBException(input+" doesn't look like a valid process description");
 		}
 	}
-
+	
 	private int stringContainsPipeOnFirstLevel(String input) {
 		int level=0;
 		for(int i=0;i<input.length();i++){
@@ -115,6 +128,22 @@ public class CCBParser {
 		}
 		return -1;
 	}
+	
+	private int findClosingParen(char[] text, int openPos) {
+	    int closePos = openPos;
+	    int counter = 1;
+	    while (counter > 0) {
+	        char c = text[++closePos];
+	        if (c == '(') {
+	            counter++;
+	        }
+	        else if (c == ')') {
+	            counter--;
+	        }
+	    }
+	    return closePos;
+	}
+
 
 	public Process parseProcess(String input, Connectivity conn, Distance dist) throws CCBException {
 		return parseProcess(input, null, conn, dist);

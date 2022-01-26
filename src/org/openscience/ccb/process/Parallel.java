@@ -96,8 +96,8 @@ public class Parallel extends Process {
 							//For forward transitions we need to find matching transitions to break
 							boolean foundmatching=false;
 							if(((SimpleTransition)leftTransition).getActionperformed().getKey()==0){
-								for(Action leftaction : ((Prefix)((SimpleTransition)leftTransition).getSubprocesstransitioning()).getPastactions()){
-									for(Action rightaction : ((Prefix)((SimpleTransition)rightTransition).getSubprocesstransitioning()).getPastactions()){
+								for(Action leftaction : ((PrefixProcess)((SimpleTransition)leftTransition).getSubprocesstransitioning()).getPastactions()){
+									for(Action rightaction : ((PrefixProcess)((SimpleTransition)rightTransition).getSubprocesstransitioning()).getPastactions()){
 										if(rightaction.getKey()==leftaction.getKey())
 											foundmatching=true;
 									}

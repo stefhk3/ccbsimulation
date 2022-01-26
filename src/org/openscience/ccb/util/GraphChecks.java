@@ -18,6 +18,7 @@ import org.openscience.ccb.action.Action;
 import org.openscience.ccb.process.Nil;
 import org.openscience.ccb.process.Parallel;
 import org.openscience.ccb.process.Prefix;
+import org.openscience.ccb.process.PrefixProcess;
 import org.openscience.ccb.process.Process;
 import org.openscience.ccb.process.Restriction;
 
@@ -38,26 +39,31 @@ public class GraphChecks {
             else if(p instanceof Parallel){
                 followProcess(((Parallel)p).getLeft(), graph2, null);
                 followProcess(((Parallel)p).getRight(), graph2, null);
-            }else if(p instanceof Prefix){
-                if(p instanceof Prefix)
-                	followProcess(((Prefix)p).getProcess(), graph2, p);
+            }else if(p instanceof PrefixProcess){
+                if(p instanceof PrefixProcess)
+                	followProcess(((PrefixProcess)p).getProcess(), graph2, p);
             	if(previous==null){
             		graph2.addVertex(p);
             	}
-                for(Action action : ((Prefix)p).getPastactions()){
-                    if(!edgesprovisional.containsKey(action.getKey()))
-                        edgesprovisional.put(action.getKey(), new ArrayList<Process>());
-                    edgesprovisional.get(action.getKey()).add(previous==null ? p : previous);
-                }
-                if(((Prefix)p).getWeakAction()!=null && ((Prefix)p).getWeakAction().getKey()!=0){
-                    if(!edgesprovisional.containsKey(((Prefix)p).getWeakAction().getKey()))
-                        edgesprovisional.put(((Prefix)p).getWeakAction().getKey(), new ArrayList<Process>());
-                    edgesprovisional.get(((Prefix)p).getWeakAction().getKey()).add(previous==null ? p : previous);                	
-                }
+            	followPrefix(((PrefixProcess)p).getPrefix(), graph2, previous, p);
             }else if(p instanceof Restriction){
                 followProcess(((Restriction)p).getProcess(), graph2, null);
             }
         }
+    }
+    
+    private void followPrefix(Prefix p, AbstractBaseGraph<Process, DefaultEdge> graph2, Process previous, Process thisprocess){
+        for(Action action : p.getPastactions()){
+            if(!edgesprovisional.containsKey(action.getKey()))
+                edgesprovisional.put(action.getKey(), new ArrayList<Process>());
+            edgesprovisional.get(action.getKey()).add(previous==null ? thisprocess : previous);
+        }
+        if(p.getWeakAction()!=null && p.getWeakAction().getKey()!=0){
+            if(!edgesprovisional.containsKey(p.getWeakAction().getKey()))
+                edgesprovisional.put(p.getWeakAction().getKey(), new ArrayList<Process>());
+            edgesprovisional.get(p.getWeakAction().getKey()).add(previous==null ? thisprocess : previous);                	
+        }
+    	
     }
 
     /**

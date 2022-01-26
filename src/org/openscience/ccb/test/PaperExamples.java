@@ -12,6 +12,7 @@ import org.openscience.ccb.action.WeakAction;
 import org.openscience.ccb.process.Nil;
 import org.openscience.ccb.process.Parallel;
 import org.openscience.ccb.process.Prefix;
+import org.openscience.ccb.process.PrefixProcess;
 import org.openscience.ccb.process.Process;
 import org.openscience.ccb.process.Restriction;
 import org.openscience.ccb.synchronisation.Synchronize;
@@ -43,7 +44,7 @@ public class PaperExamples extends TestCase{
 		List<Action> restrictions=new ArrayList<Action>();
 		restrictions.add(new StrongAction("a"));
 		restrictions.add(new StrongAction("b"));
-		Process p1=new Restriction(restrictions, new Parallel(new Prefix(new StrongAction("a"), new PastSemicolonAction("b"),new Nil()), new Parallel(new Prefix(new StrongAction("a"),new Nil()), new Prefix(new StrongAction("b"),new Nil()),null,null),null,null));
+		Process p1=new Restriction(restrictions, new Parallel(new PrefixProcess(new StrongAction("a"), new PastSemicolonAction("b"),new Nil()), new Parallel(new PrefixProcess(new StrongAction("a"),new Nil()), new PrefixProcess(new StrongAction("b"),new Nil()),null,null),null,null));
 		Assert.assertEquals("((a;b).0 | (a).0 | (b).0) \\ {a,b}",  p1.toString());
 		List<Transition> transitions=p1.inferTransitions(synchronize, ccbconfiguration, p1);
 		Assert.assertEquals(1, transitions.size());
@@ -65,7 +66,7 @@ public class PaperExamples extends TestCase{
 		restrictions.add(new StrongAction("a"));
 		restrictions.add(new StrongAction("b"));
 		restrictions.add(new StrongAction("e"));
-		Process p1=new Restriction(restrictions, new Parallel(new Parallel(new Prefix(new StrongAction("a",1), new PastSemicolonAction("b"),new Nil()), new Prefix(new StrongAction("a",1), new WeakAction("b"),new Nil()),null,null), new Prefix(new StrongAction("e"),new Nil()),null,null));
+		Process p1=new Restriction(restrictions, new Parallel(new Parallel(new PrefixProcess(new StrongAction("a",1), new PastSemicolonAction("b"),new Nil()), new PrefixProcess(new StrongAction("a",1), new WeakAction("b"),new Nil()),null,null), new PrefixProcess(new StrongAction("e"),new Nil()),null,null));
 		Assert.assertEquals("((a[1];b).0 | (a[1];b).0 | (e).0) \\ {a,b,e}",  p1.toString());
 		List<Transition> transitions=p1.inferTransitions(synchronize, ccbconfiguration, p1);
 		Assert.assertEquals(2, transitions.size());
@@ -101,7 +102,7 @@ public class PaperExamples extends TestCase{
 		restrictions.add(new StrongAction("a"));
 		restrictions.add(new StrongAction("b"));
 		restrictions.add(new StrongAction("e"));
-		Process p1=new Restriction(restrictions, new Parallel(new Parallel(new Prefix(new StrongAction("a",1), new PastSemicolonAction("b"),new Nil()), new Prefix(new StrongAction("e",2), new PastSemicolonAction("b"),new Nil()),null,null), new Prefix(actionsp3,new Nil()),null,null));
+		Process p1=new Restriction(restrictions, new Parallel(new Parallel(new PrefixProcess(new StrongAction("a",1), new PastSemicolonAction("b"),new Nil()), new PrefixProcess(new StrongAction("e",2), new PastSemicolonAction("b"),new Nil()),null,null), new PrefixProcess(new Prefix(actionsp3),new Nil()),null,null));
 		Assert.assertEquals("((a[1];b).0 | (e[2];b).0 | (a[1],e[2]).0) \\ {a,b,e}",  p1.toString());
 		List<Transition> transitions=p1.inferTransitions(synchronize, ccbconfiguration, p1);
 		Assert.assertEquals(2, transitions.size());
@@ -133,7 +134,7 @@ public class PaperExamples extends TestCase{
 		List<Action> restrictions=new ArrayList<Action>();
 		restrictions.add(new StrongAction("a"));
 		restrictions.add(new StrongAction("b"));
-		Process p1=new Restriction(restrictions, new Parallel(new Prefix(new StrongAction("a"),new Nil()), new Parallel(new Prefix(new StrongAction("b"),new Nil()), new Prefix(new StrongAction("b"),new Nil()),null,null),null,null));
+		Process p1=new Restriction(restrictions, new Parallel(new PrefixProcess(new StrongAction("a"),new Nil()), new Parallel(new PrefixProcess(new StrongAction("b"),new Nil()), new PrefixProcess(new StrongAction("b"),new Nil()),null,null),null,null));
 		Assert.assertEquals("((a).0 | (b).0 | (b).0) \\ {a,b}",  p1.toString());
 		List<Transition> transitions=p1.inferTransitions(synchronize, ccbconfiguration, p1);
 		Assert.assertEquals(2, transitions.size());
@@ -143,7 +144,7 @@ public class PaperExamples extends TestCase{
 		Assert.assertEquals("c",transitions.get(1).getActionperformed().getActionName());
 		p1.executeTransition(transitions.get(0), 1, p1);
 		Assert.assertEquals("((a[1]).0 | (b[1]).0 | (b).0) \\ {a,b}",  p1.toString());
-		p1=new Restriction(restrictions, new Parallel(new Prefix(new StrongAction("a"),new Nil()), new Parallel(new Prefix(new StrongAction("b"),new Nil()), new Prefix(new StrongAction("b"),new Nil()),null,null),null,null));
+		p1=new Restriction(restrictions, new Parallel(new PrefixProcess(new StrongAction("a"),new Nil()), new Parallel(new PrefixProcess(new StrongAction("b"),new Nil()), new PrefixProcess(new StrongAction("b"),new Nil()),null,null),null,null));
 		Assert.assertEquals("((a).0 | (b).0 | (b).0) \\ {a,b}",  p1.toString());
 		transitions=p1.inferTransitions(synchronize, ccbconfiguration, p1);
 		Assert.assertEquals(2, transitions.size());

@@ -21,7 +21,7 @@ import org.openscience.ccb.predicate.Connectivity;
 import org.openscience.ccb.predicate.Distance;
 import org.openscience.ccb.process.Nil;
 import org.openscience.ccb.process.Parallel;
-import org.openscience.ccb.process.Prefix;
+import org.openscience.ccb.process.PrefixProcess;
 import org.openscience.ccb.process.Process;
 import org.openscience.ccb.process.Restriction;
 import org.openscience.ccb.synchronisation.Synchronize;
@@ -49,7 +49,7 @@ public class TestGraphChecks extends TestCase {
         List<Action> restrictions=new ArrayList<Action>();
         restrictions.add(new StrongAction("a"));
         restrictions.add(new StrongAction("b"));
-        Process p1=new Restriction(restrictions, new Parallel(new Prefix(new StrongAction("a"), new PastSemicolonAction("b"),new Nil()), new Parallel(new Prefix(new StrongAction("a"),new Nil()), new Prefix(new StrongAction("b"),new Nil()),null,null),null,null));
+        Process p1=new Restriction(restrictions, new Parallel(new PrefixProcess(new StrongAction("a"), new PastSemicolonAction("b"),new Nil()), new Parallel(new PrefixProcess(new StrongAction("a"),new Nil()), new PrefixProcess(new StrongAction("b"),new Nil()),null,null),null,null));
         Assert.assertEquals("((a;b).0 | (a).0 | (b).0) \\ {a,b}",  p1.toString());
         GraphChecks graphChecks = new GraphChecks(p1);
         Assert.assertEquals(3, graphChecks.getGraph().vertexSet().size());
