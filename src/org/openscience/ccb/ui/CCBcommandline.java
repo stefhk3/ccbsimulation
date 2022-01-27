@@ -69,7 +69,9 @@ public class CCBcommandline {
     	    	    List<Transition> newTransitions = new ArrayList<Transition>();
                     for(int i=0;i<localTransitions.size();i++){
                         Process clone=newprocess.clone();
-                        Transition transition = clone.inferTransitions(synchronize, ccbconfiguration, clone).get(i);
+                        List<Transition> newtransitions = clone.inferTransitions(synchronize, ccbconfiguration, clone);
+                        Transition localTransition=localTransitions.get(i);
+                        Transition transition = newtransitions.stream().filter(x -> x.toString().equals(localTransition.toString())).findFirst().get();
                         //we check if the process reached is new in this round using the isomorphism
                         boolean existing=false;
                         Process clonedProcess=clone.clone();
@@ -132,7 +134,7 @@ public class CCBcommandline {
                     for(Transition transition : newProcesses.get(newprocess)){
                         if((exclusionList!=null && !exclusionList.contains(newProcessCount)) || (inclusionList!=null && inclusionList.contains(newProcessCount)) || (inclusionList==null && exclusionList==null)){
                         	//we check if the process is new, ie. not reached anywhere before.
-                            Process clonedProcess=transition.getClone();
+                        	Process clonedProcess=transition.getClone();
                             clonedProcess.executeTransition(transition, newkey++, clonedProcess);
                             if(ccbconfiguration.forceMove)
                                 clonedProcess.accept(move);

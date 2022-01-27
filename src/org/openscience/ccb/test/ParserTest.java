@@ -34,4 +34,10 @@ public class ParserTest  extends TestCase{
 		process=new CCBParser().parseProcess(input,null,null);
 		Assert.assertEquals(input, process.toString());		
 	}
+	
+	public void testGroups() throws CCBException{
+		String input="(b[7];i).(a,m;r).0";
+		Process process=new CCBParser().parseProcess(input,null,null);
+		Assert.assertEquals(input, process.toString());
+	}
 }

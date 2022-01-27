@@ -90,6 +90,7 @@ public class Prefix {
 	public String toString(Action actionperformed1, Action actionperformed2, Action triggeredAction, boolean allActionsInOne) {
 		StringBuffer prefix=new StringBuffer();
 		boolean first=true;
+		prefix.append("(");
 		if(allActionsInOne){
 			Set<Action> allactions=getAllActionsInOne();
 			for(Action action : allactions){
@@ -140,7 +141,9 @@ public class Prefix {
 			}
 			prefix.append(weakAction.toString());
 		}
+		prefix.append(")");
 		if(nextPrefix!=null) {
+			prefix.append("|");
 			prefix.append(nextPrefix.toString(actionperformed1, actionperformed2, triggeredAction, allActionsInOne));
 		}
 		return prefix.toString();

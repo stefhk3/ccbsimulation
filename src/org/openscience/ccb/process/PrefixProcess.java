@@ -145,10 +145,12 @@ public class PrefixProcess extends Process {
 
 	public String toString(Action actionperformed1, Action actionperformed2, Action triggeredAction, boolean allActionsInOne) {
 		String prefix=this.prefix.toString( actionperformed1,  actionperformed2,  triggeredAction,  allActionsInOne);
+		if(this.prefix.getNextPrefix()!=null)
+			prefix="("+prefix+")";
 		String value="";
 		if(counter>-1)
 			value="P"+counter+"=";
-		return value+"("+prefix+")."+process.toString(actionperformed1, actionperformed2, triggeredAction);
+		return value+prefix+"."+process.toString(actionperformed1, actionperformed2, triggeredAction);
 	}
 	
 	@Override

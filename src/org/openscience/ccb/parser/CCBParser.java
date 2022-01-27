@@ -58,7 +58,7 @@ public class CCBParser {
 		    StringTokenizer st=new StringTokenizer(restrictionsstring,",");
 		    List<Action> restrictions=new ArrayList<Action>();
 		    while(st.hasMoreTokens()){
-		    	StrongAction restriction=new StrongAction(st.nextToken());
+		    	StrongAction restriction=new StrongAction(st.nextToken().trim());
 		    	restrictions.add(restriction);
 		    }
 		    return new Restriction(restrictions, subprocess);
@@ -81,6 +81,10 @@ public class CCBParser {
 			return new Prefix(parsePrefix(input.substring(0,input.indexOf('|')).trim(), weakActionsList), parsePrefix(input.substring(input.indexOf('|')+2).trim(), weakActionsList));
 		}else {
 		    //Outer operator is prefix
+			if(input.charAt(0)=='(')
+				input=input.substring(1);
+			if(input.charAt(input.length()-1)==')')
+				input=input.substring(0,input.length()-1);
 			int end=input.length();
 			PastSemicolonAction weakAction = null;
 			if(input.indexOf(";")>-1){
