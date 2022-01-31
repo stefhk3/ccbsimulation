@@ -40,12 +40,12 @@ public class GraphChecks {
                 followProcess(((Parallel)p).getLeft(), graph2, null);
                 followProcess(((Parallel)p).getRight(), graph2, null);
             }else if(p instanceof PrefixProcess){
+            	followPrefix(((PrefixProcess)p).getPrefix(), graph2, previous, p);
                 if(p instanceof PrefixProcess)
-                	followProcess(((PrefixProcess)p).getProcess(), graph2, p);
+                	followProcess(((PrefixProcess)p).getProcess(), graph2, previous);
             	if(previous==null){
             		graph2.addVertex(p);
             	}
-            	followPrefix(((PrefixProcess)p).getPrefix(), graph2, previous, p);
             }else if(p instanceof Restriction){
                 followProcess(((Restriction)p).getProcess(), graph2, null);
             }

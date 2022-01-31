@@ -162,12 +162,9 @@ public class PrefixProcess extends Process {
 
 	@Override
 	public void executeTransition(Transition transition, int newkey, Process rootProcess) throws CCBException {
-		if(transition.getSubprocesstransitioning()==process){
-			process.executeTransition(transition, newkey, rootProcess);
-			return;
-		}else {
-			prefix.executeTransition(transition, newkey, rootProcess);
-		}
+		prefix.executeTransition(transition, newkey, rootProcess);
+		if(!(this.process instanceof Nil))
+			this.process.executeTransition(transition, newkey, rootProcess);
 	}
 
 	@Override
